@@ -1,35 +1,30 @@
-// Copyright (C) 2023 jmh
+// Copyright (C) 2024 jmh
 // SPDX-License-Identifier: GPL-3.0-only
 
 using System;
-using System.Collections.Generic;
-using Android.Graphics;
 using Android.Util;
 using AndroidX.Camera.Core;
-using ZXing;
-using ZXing.Common;
+using Stratum.ZXing;
+using Serilog;
+using ImageFormat = Stratum.ZXing.ImageFormat;
+using Log = Serilog.Log;
 
 namespace Stratum.Droid.QrCode
 {
     public class QrCodeImageAnalyser : Java.Lang.Object, ImageAnalysis.IAnalyzer
     {
         public event EventHandler<string> QrCodeScanned;
-        public Size DefaultTargetResolution => new(640, 480);
+        public Size DefaultTargetResolution => new(1920, 1080);
         
-        private readonly BarcodeReader<Bitmap> _barcodeReader;
-        
-        public QrCodeImageAnalyser()
+        private readonly ILogger _log = Log.ForContext<QrCodeImageAnalyser>();
+
+        private readonly QrCodeReader _qrCodeReader = new(new ReaderOptions
         {
-            _barcodeReader = new BarcodeReader<Bitmap>(null, null, ls => new HybridBinarizer(ls))
-            {
-                AutoRotate = true,
-                Options = new DecodingOptions
-                {
-                    PossibleFormats = new List<BarcodeFormat> { BarcodeFormat.QR_CODE },
-                    TryInverted = true
-                }
-            };
-        }
+            TryRotate = true,
+            TryHarder = true,
+            TryInvert = true,
+            Binarizer = Binarizer.LocalAverage
+        });
         
         public void Analyze(IImageProxy imageProxy)
         {
@@ -37,7 +32,7 @@ namespace Stratum.Droid.QrCode
             {
                 return;
             }
-            
+
             try
             {
                 AnalyseInternal(imageProxy);
@@ -47,22 +42,34 @@ namespace Stratum.Droid.QrCode
                 imageProxy.Close();
             }
         }
-        
+
         private void AnalyseInternal(IImageProxy imageProxy)
         {
-            using var plane = imageProxy.Image.GetPlanes()[0];
+            using var rgbaPlane = imageProxy.Image.GetPlanes()[0];
+            ReadOnlySpan<byte> bytes;
             
-            var bytes = new byte[plane.Buffer.Capacity()];
-            plane.Buffer.Get(bytes);
+            unsafe
+            {
+                var bufferAddress = rgbaPlane.Buffer.GetDirectBufferAddress().ToPointer();
+                bytes = new ReadOnlySpan<byte>(bufferAddress, rgbaPlane.Buffer.Capacity());
+            }
             
-            var source = new PlanarYUVLuminanceSource(
-                bytes, imageProxy.Width, imageProxy.Height, 0, 0, imageProxy.Width, imageProxy.Height, false);
+            using var imageView = new ImageView(bytes, imageProxy.Width, imageProxy.Height, ImageFormat.RGBA);
+            string result;
             
-            var result = _barcodeReader.Decode(source);
-            
+            try
+            {
+                result = _qrCodeReader.Read(imageView);
+            }
+            catch (QrCodeException e)
+            {
+                _log.Warning(e, "Error scanning QR code: {Type}", e.Type);
+                return;
+            }
+
             if (result != null)
             {
-                QrCodeScanned?.Invoke(this, result.Text);
+                QrCodeScanned?.Invoke(this, result);
             }
         }
     }

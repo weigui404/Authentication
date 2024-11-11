@@ -9,13 +9,11 @@ using Stratum.Core.Entity;
 using Stratum.Core.Persistence;
 using Stratum.Core.Service;
 using Stratum.Core.Service.Impl;
+using Stratum.ZXing;
 using HtmlAgilityPack;
 using Moq;
-using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.PixelFormats;
+using SkiaSharp;
 using Xunit;
-using ZXing;
-using ZXing.Common;
 
 namespace Stratum.Test.Service
 {
@@ -105,13 +103,7 @@ namespace Stratum.Test.Service
             var rows = document.DocumentNode.SelectNodes("//tr");
             Assert.Equal(2, rows.Count);
 
-            var barcodeReader = new ZXing.ImageSharp.BarcodeReader<Rgba32>
-            {
-                Options = new DecodingOptions
-                {
-                    PossibleFormats = new List<BarcodeFormat> { BarcodeFormat.QR_CODE }
-                }
-            };
+            var qrCodeReader = new QrCodeReader();
 
             void AssertRowMatches(HtmlNode node, Authenticator auth)
             {
@@ -123,10 +115,10 @@ namespace Stratum.Test.Service
                 var img = tds[3].SelectSingleNode("img");
                 var src = img.Attributes["src"].Value;
                 var data = Convert.FromBase64String(src["data:image/png;base64,".Length..]);
-
-                using var decodedImage = Image.Load<Rgba32>(data);
-                var qrCodeResult = barcodeReader.Decode(decodedImage);
-                Assert.Equal(auth.GetUri(), qrCodeResult.Text);
+                
+                using var image = SKBitmap.Decode(data);
+                using var imageView = new ImageView(image.GetPixelSpan(), image.Width, image.Height, ImageFormat.Lum);
+                Assert.Equal(auth.GetUri(), qrCodeReader.Read(imageView));
             }
 
             AssertRowMatches(rows[0], authA);
