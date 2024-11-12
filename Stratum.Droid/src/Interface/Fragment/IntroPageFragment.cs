@@ -3,7 +3,7 @@
 
 using Android.OS;
 using Android.Views;
-using Android.Widget;
+using AndroidX.AppCompat.Widget;
 using Google.Android.Material.TextView;
 
 namespace Stratum.Droid.Interface.Fragment
@@ -24,7 +24,7 @@ namespace Stratum.Droid.Interface.Fragment
 
             var summary = view.FindViewById<MaterialTextView>(Resource.Id.textSummary);
             var title = view.FindViewById<MaterialTextView>(Resource.Id.textTitle);
-            var image = view.FindViewById<ImageView>(Resource.Id.image);
+            var image = view.FindViewById<AppCompatImageView>(Resource.Id.image);
 
             title.Text = Resources.GetStringArray(Resource.Array.introTitle)[_position];
             summary.Text = Resources.GetStringArray(Resource.Array.introSummary)[_position];
