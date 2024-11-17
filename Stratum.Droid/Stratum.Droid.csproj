@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <TargetFramework>net8.0-android</TargetFramework>
+        <TargetFramework>net9.0-android</TargetFramework>
         <SupportedOSPlatformVersion>21</SupportedOSPlatformVersion>
         <OutputType>Exe</OutputType>
         <Nullable>disable</Nullable>
@@ -8,7 +8,7 @@
         <ApplicationId>com.stratumauth.app</ApplicationId>
         <ApplicationVersion>1</ApplicationVersion>
         <ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
-        <LangVersion>12</LangVersion>
+        <LangVersion>13</LangVersion>
         <AndroidVersionCodePattern>{versionCode}</AndroidVersionCodePattern>
         <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
     </PropertyGroup>
@@ -25,7 +25,7 @@
         <TrimmerRootDescription>trim.xml</TrimmerRootDescription>
     </PropertyGroup>
     <ItemGroup>
-        <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="8.0.0">
+        <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="9.0.0">
             <PrivateAssets>all</PrivateAssets>
         </PackageReference>
         <PackageReference Include="Mono.AotProfiler.Android" Version="7.0.0" />

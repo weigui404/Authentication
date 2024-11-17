@@ -13,7 +13,7 @@ from typing import Generator
 
 REPO = "https://github.com/stratumauth/app.git"
 
-FRAMEWORK = "net8.0-android"
+FRAMEWORK = "net9.0-android"
 CONFIGURATION = "Release"
 
 PROJECT_NAMES = {

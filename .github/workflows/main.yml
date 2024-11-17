@@ -10,7 +10,7 @@ on:
   workflow_dispatch:
 
 env:
-  FRAMEWORK: net8.0-android
+  FRAMEWORK: net9.0-android
   CONFIGURATION: Release
   DOTNET_CLI_TELEMETRY_OPTOUT: true
 
