@@ -45,7 +45,8 @@ namespace Stratum.Droid.Activity
                 .RequireLensFacing(CameraSelector.LensFacingBack)
                 .Build();
 
-            preview.SetSurfaceProvider(_previewView.SurfaceProvider);
+            var executor = Executors.NewCachedThreadPool();
+            preview.SetSurfaceProvider(executor, _previewView.SurfaceProvider);
 
             var analysis = new ImageAnalysis.Builder()
                 .SetBackpressureStrategy(ImageAnalysis.StrategyKeepOnlyLatest)
@@ -54,7 +55,7 @@ namespace Stratum.Droid.Activity
             
             var analyser = new QrCodeImageAnalyser();
             analyser.QrCodeScanned += OnQrCodeScanned;
-            analysis.SetAnalyzer(Executors.NewSingleThreadExecutor(), analyser);
+            analysis.SetAnalyzer(executor, analyser);
 
             _camera = provider.BindToLifecycle(this, selector, analysis, preview);
         }
