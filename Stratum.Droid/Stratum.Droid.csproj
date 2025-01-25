@@ -30,7 +30,7 @@
         </PackageReference>
         <PackageReference Include="Mono.AotProfiler.Android" Version="7.0.0" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.3" /> 
-        <PackageReference Include="Serilog" Version="4.1.0" />
+        <PackageReference Include="Serilog" Version="4.2.0" />
         <PackageReference Include="Serilog.Exceptions" Version="8.4.0" />
         <PackageReference Include="Serilog.Sinks.File" Version="6.0.0" />
         <PackageReference Include="sqlite-net-sqlcipher" Version="1.9.172" />
@@ -38,24 +38,24 @@
         <PackageReference Include="TinyIoC" Version="1.4.0-rc1">
             <PrivateAssets>all</PrivateAssets>
         </PackageReference>
-        <PackageReference Include="Xamarin.AndroidX.Biometric" Version="1.1.0.26" />
-        <PackageReference Include="Xamarin.AndroidX.Browser" Version="1.8.0.7" />
-        <PackageReference Include="Xamarin.AndroidX.Camera.Camera2" Version="1.4.0.1" />
-        <PackageReference Include="Xamarin.AndroidX.Camera.Core" Version="1.4.0.1" />
-        <PackageReference Include="Xamarin.AndroidX.Camera.View" Version="1.4.0.1" />
-        <PackageReference Include="Xamarin.AndroidX.ConstraintLayout" Version="2.2.0.1" />
-        <PackageReference Include="Xamarin.AndroidX.Lifecycle.Common" Version="2.8.7.1" />
-        <PackageReference Include="Xamarin.AndroidX.Lifecycle.Extensions" Version="2.2.0.30" />
-        <PackageReference Include="Xamarin.AndroidX.Lifecycle.LiveData" Version="2.8.7.1" />
-        <PackageReference Include="Xamarin.AndroidX.Lifecycle.Runtime" Version="2.8.7.1" />
-        <PackageReference Include="Xamarin.AndroidX.Preference" Version="1.2.1.11" />
-        <PackageReference Include="Xamarin.AndroidX.ViewPager2" Version="1.1.0.4" />
-        <PackageReference Include="Xamarin.AndroidX.Work.Runtime" Version="2.10.0.1" />
-        <PackageReference Include="Xamarin.Google.Android.Material" Version="1.12.0.1" />
-        <PackageReference Include="StratumAuth.ZXing" Version="1.0.0" />
+        <PackageReference Include="Xamarin.AndroidX.Biometric" Version="1.1.0.27" />
+        <PackageReference Include="Xamarin.AndroidX.Browser" Version="1.8.0.8" />
+        <PackageReference Include="Xamarin.AndroidX.Camera.Camera2" Version="1.4.1.1" />
+        <PackageReference Include="Xamarin.AndroidX.Camera.Core" Version="1.4.1.1" />
+        <PackageReference Include="Xamarin.AndroidX.Camera.View" Version="1.4.1.1" />
+        <PackageReference Include="Xamarin.AndroidX.ConstraintLayout" Version="2.2.0.2" />
+        <PackageReference Include="Xamarin.AndroidX.Lifecycle.Common" Version="2.8.7.2" />
+        <PackageReference Include="Xamarin.AndroidX.Lifecycle.Extensions" Version="2.2.0.31" />
+        <PackageReference Include="Xamarin.AndroidX.Lifecycle.LiveData" Version="2.8.7.2" />
+        <PackageReference Include="Xamarin.AndroidX.Lifecycle.Runtime" Version="2.8.7.2" />
+        <PackageReference Include="Xamarin.AndroidX.Preference" Version="1.2.1.12" />
+        <PackageReference Include="Xamarin.AndroidX.ViewPager2" Version="1.1.0.5" />
+        <PackageReference Include="Xamarin.AndroidX.Work.Runtime" Version="2.10.0.3" />
+        <PackageReference Include="Xamarin.Google.Android.Material" Version="1.12.0.2" />
+        <PackageReference Include="StratumAuth.ZXing" Version="1.1.0" />
     </ItemGroup>
     <ItemGroup Condition="!$(DefineConstants.Contains(FDROID))">
-        <PackageReference Include="Xamarin.GooglePlayServices.Wearable" Version="118.2.0.3" />
+        <PackageReference Include="Xamarin.GooglePlayServices.Wearable" Version="119.0.0.1" />
     </ItemGroup>
     <ItemGroup Condition="$(DefineConstants.Contains(FDROID))">
         <AndroidResource Remove="Resources\values\wear.xml" />
