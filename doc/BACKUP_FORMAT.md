@@ -63,7 +63,9 @@ If you are migrating your authenticators from another app, you can create your o
 
 #### Category
 
-* The category Id is the first 8 characters of the SHA-1 hash of the name.
+* The category Id is a random UUID.
+
+* The category name must be unique.
 
 #### AuthenticatorCategory
 
