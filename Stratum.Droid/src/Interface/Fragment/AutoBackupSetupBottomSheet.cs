@@ -253,7 +253,7 @@ namespace Stratum.Droid.Interface.Fragment
 
             try
             {
-                dirName = FileUtil.GetDocumentName(Context.ContentResolver, uri);
+                dirName = FileUtil.GetDocumentTreeDisplayName(Context.ContentResolver, uri);
             }
             catch (Exception e)
             {

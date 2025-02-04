@@ -1368,6 +1368,7 @@ namespace Stratum.Droid.Activity
             SetLoading(true);
 
             byte[] data;
+            string displayName;
 
             try
             {
@@ -1377,24 +1378,48 @@ namespace Stratum.Droid.Activity
                 {
                     throw new IOException("The file is empty");
                 }
+
+                displayName = FileUtil.GetDisplayName(ContentResolver, uri);
             }
             catch (Exception e)
             {
                 _log.Error(e, "Error picking file to restore");
-                ShowSnackbar(Resource.String.filePickError, Snackbar.LengthShort);
                 SetLoading(false);
+                ShowSnackbar(Resource.String.filePickError, Snackbar.LengthShort);
                 return;
             }
 
+            try
+            {
+                if (displayName.EndsWith("." + UriListBackup.FileExtension))
+                {
+                    await ImportFromData(new UriListBackupConverter(_iconResolver), data);
+                }
+                else if (displayName.EndsWith("." + HtmlBackup.FileExtension))
+                {
+                    await ImportFromData(new HtmlBackupConverter(_iconResolver), data);
+                }
+                else
+                {
+                    await RestoreFromData(data);
+                }
+            }
+            finally
+            {
+                SetLoading(false);
+            }
+        }
+
+        private async Task RestoreFromData(byte[] data)
+        {
             var supportedEncryptions = _backupEncryptions.Where(e => e.CanBeDecrypted(data));
 
             if (!supportedEncryptions.Any())
             {
                 ShowSnackbar(Resource.String.invalidFileError, Snackbar.LengthShort);
-                SetLoading(false);
                 return;
             }
-
+            
             try
             {
                 var result = await DecryptAndRestore(data, null);
@@ -1404,10 +1429,6 @@ namespace Stratum.Droid.Activity
             {
                 _log.Error(e, "Error decrypting file");
                 PromptForRestorePassword(data);
-            }
-            finally
-            {
-                SetLoading(false);
             }
         }
 

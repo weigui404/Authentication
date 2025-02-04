@@ -23,6 +23,11 @@ namespace Stratum.Core.Converter
         public override Task<ConversionResult> ConvertAsync(byte[] data, string password = null)
         {
             var text = Encoding.UTF8.GetString(data);
+            return Task.FromResult(ConvertText(text));
+        }
+
+        protected ConversionResult ConvertText(string text)
+        {
             var lines = text.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
 
             if (!lines.Any(l => l.StartsWith("otpauth")))
@@ -55,9 +60,7 @@ namespace Stratum.Core.Converter
             }
 
             var backup = new Backup.Backup { Authenticators = authenticators };
-            var result = new ConversionResult { Failures = failures, Backup = backup };
-
-            return Task.FromResult(result);
+            return new ConversionResult { Failures = failures, Backup = backup };
         }
     }
 }

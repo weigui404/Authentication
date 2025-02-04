@@ -97,36 +97,50 @@ namespace Stratum.Droid.Util
             });
         }
 
-        public static string GetDocumentName(ContentResolver resolver, Uri uri)
+        private static string GetContentUriDisplayName(ContentResolver resolver, Uri uri)
         {
-            string name = null;
+            ICursor cursor = null;
+            
+            try
+            {
+                cursor = resolver.Query(uri, null, null, null, null);
+
+                if (cursor != null && cursor.MoveToFirst())
+                {
+                    var index = cursor.GetColumnIndex(DocumentsContract.Document.ColumnDisplayName);
+                    return cursor.GetString(index);
+                }
+            }
+            finally
+            {
+                cursor?.Close();
+            }
+
+            return null;
+        }
+
+        public static string GetDisplayName(ContentResolver resolver, Uri uri)
+        {
+            return uri.Scheme == "content"
+                ? GetContentUriDisplayName(resolver, uri) :
+                uri.LastPathSegment;
+        }
+
+        public static string GetDocumentTreeDisplayName(ContentResolver resolver, Uri uri)
+        {
+            string name;
 
             if (uri.Scheme == "content")
             {
-                ICursor cursor = null;
+                var documentUri =
+                    DocumentsContract.BuildDocumentUriUsingTree(uri, DocumentsContract.GetTreeDocumentId(uri));
 
-                try
+                if (documentUri == null)
                 {
-                    var documentUri =
-                        DocumentsContract.BuildDocumentUriUsingTree(uri, DocumentsContract.GetTreeDocumentId(uri));
-
-                    if (documentUri == null)
-                    {
-                        throw new IOException("Cannot get document URI");
-                    }
-
-                    cursor = resolver.Query(documentUri, null, null, null, null);
-
-                    if (cursor != null && cursor.MoveToFirst())
-                    {
-                        var index = cursor.GetColumnIndex(DocumentsContract.Document.ColumnDisplayName);
-                        name = cursor.GetString(index);
-                    }
+                    throw new IOException("Cannot get document URI");
                 }
-                finally
-                {
-                    cursor?.Close();
-                }
+
+                name = GetContentUriDisplayName(resolver, documentUri);
             }
             else
             {
