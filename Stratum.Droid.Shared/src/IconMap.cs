@@ -769,6 +769,7 @@ namespace Stratum.Droid.Shared
             { "ynab", Resource.Drawable.auth_ynab },
             { "yoyogames", Resource.Drawable.auth_yoyogames },
             { "yubico", Resource.Drawable.auth_yubico },
+            { "zabbix", Resource.Drawable.auth_zabbix },
             { "zapier", Resource.Drawable.auth_zapier },
             { "zendesk", Resource.Drawable.auth_zendesk },
             { "zerodha", Resource.Drawable.auth_zerodha },
