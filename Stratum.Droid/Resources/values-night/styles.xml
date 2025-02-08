@@ -4,6 +4,11 @@
         <item name="colorPrimaryDark">@android:color/black</item>
         <item name="colorSurface">@android:color/black</item>
         <item name="colorSurfaceVariant">@android:color/black</item>
+        <item name="colorSurfaceContainer">@android:color/black</item>
+        <item name="colorSurfaceContainerLow">@android:color/black</item>
+        <item name="colorSurfaceContainerHigh">@android:color/black</item>
+        <item name="colorSurfaceContainerLowest">@android:color/black</item>
+        <item name="colorSurfaceContainerHighest">@android:color/black</item>
         <item name="cardStyle">@style/CardStyle.Black</item>
         <item name="appBarLayoutStyle">@style/AppBarLayoutStyle.Black</item>
         <item name="bottomAppBarStyle">@style/BottomAppBarStyle.Black</item>
