@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Stratum.Core.Util;
@@ -23,23 +22,22 @@ namespace Stratum.Core.Converter
         public override Task<ConversionResult> ConvertAsync(byte[] data, string password = null)
         {
             var text = Encoding.UTF8.GetString(data);
-            return Task.FromResult(ConvertText(text));
+            var lines = text.Split(['\r', '\n'], StringSplitOptions.RemoveEmptyEntries);
+            return Task.FromResult(ConvertLines(lines));
         }
 
-        protected ConversionResult ConvertText(string text)
+        protected ConversionResult ConvertLines(IEnumerable<string> lines)
         {
-            var lines = text.Split(['\r', '\n'], StringSplitOptions.RemoveEmptyEntries);
-
-            if (!lines.All(l => l.StartsWith("otpauth") || l.StartsWith("motp")))
-            {
-                throw new ArgumentException("Invalid file");
-            }
-
             var authenticators = new List<Authenticator>();
             var failures = new List<ConversionFailure>();
 
             foreach (var line in lines)
             {
+                if (!line.StartsWith("otpauth") && !line.StartsWith("motp"))
+                { 
+                    throw new ArgumentException("Invalid file"); 
+                }
+                
                 Authenticator auth;
 
                 try

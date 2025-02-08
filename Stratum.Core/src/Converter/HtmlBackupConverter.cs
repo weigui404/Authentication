@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: GPL-3.0-only
 
 using System;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
@@ -21,7 +22,6 @@ namespace Stratum.Core.Converter
             var document = new HtmlDocument();
             document.LoadHtml(html);
             
-            var builder = new StringBuilder();
             var nodes = document.DocumentNode.SelectNodes("//code");
 
             if (nodes == null)
@@ -29,12 +29,7 @@ namespace Stratum.Core.Converter
                 throw new ArgumentException("No URIs found in file");
             }
 
-            foreach (var node in nodes)
-            {
-                builder.AppendLine(node.InnerText);
-            }
-
-            return Task.FromResult(ConvertText(builder.ToString()));
+            return Task.FromResult(ConvertLines(nodes.Select(n => n.InnerText)));
         }
     }
 }
