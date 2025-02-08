@@ -14,7 +14,7 @@ namespace Stratum.Droid.QrCode
     public class QrCodeImageAnalyser : Java.Lang.Object, ImageAnalysis.IAnalyzer
     {
         public event EventHandler<string> QrCodeScanned;
-        public Size DefaultTargetResolution => new(1920, 1080);
+        public Size DefaultTargetResolution => new(640, 480);
         
         private readonly ILogger _log = Log.ForContext<QrCodeImageAnalyser>();
 
