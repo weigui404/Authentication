@@ -146,10 +146,10 @@ namespace Stratum.Core.Converter
                 {
                     var bytes = Base16.Decode(Secret);
                     var base32Secret = Base32.Rfc4648.Encode(bytes);
-                    return SecretUtil.Clean(base32Secret, type);
+                    return SecretUtil.Normalise(base32Secret, type);
                 }
 
-                return SecretUtil.Clean(Secret, type);
+                return SecretUtil.Normalise(Secret, type);
             }
 
             public Authenticator Convert(IIconResolver iconResolver)

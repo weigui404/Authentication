@@ -42,6 +42,19 @@ namespace Stratum.Core
                 _ => throw new ArgumentOutOfRangeException(nameof(type))
             };
         }
+        
+        public static bool HasBase16Secret(this AuthenticatorType type)
+        {
+            return type switch
+            {
+                AuthenticatorType.Hotp => false,
+                AuthenticatorType.Totp => false,
+                AuthenticatorType.MobileOtp => true,
+                AuthenticatorType.SteamOtp => false,
+                AuthenticatorType.YandexOtp => false,
+                _ => throw new ArgumentOutOfRangeException(nameof(type))
+            };
+        }
 
         public static bool HasVariableAlgorithm(this AuthenticatorType type)
         {

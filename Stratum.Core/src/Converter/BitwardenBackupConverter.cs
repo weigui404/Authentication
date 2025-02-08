@@ -319,7 +319,7 @@ namespace Stratum.Core.Converter
                         Digits = type.GetDefaultDigits(),
                         Period = type.GetDefaultPeriod(),
                         Icon = iconResolver.FindServiceKeyByName(Name),
-                        Secret = SecretUtil.Clean(secret, type)
+                        Secret = SecretUtil.Normalise(secret, type)
                     };
                 }
 

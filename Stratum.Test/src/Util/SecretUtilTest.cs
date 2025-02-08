@@ -19,11 +19,11 @@ namespace Stratum.Test.Util
             AuthenticatorType.MobileOtp)] // Remove hyphens
         [InlineData("abcdefg", "abcdefg", AuthenticatorType.MobileOtp)] // Preserve case 1/2
         [InlineData("ABCDEFG", "ABCDEFG", AuthenticatorType.MobileOtp)] // Preserve case 2/2
-        public void Clean(string input, string output, params AuthenticatorType[] types)
+        public void Normalise(string input, string output, params AuthenticatorType[] types)
         {
             foreach (var type in types)
             {
-                Assert.Equal(output, SecretUtil.Clean(input, type));
+                Assert.Equal(output, SecretUtil.Normalise(input, type));
             }
         }
 
@@ -40,9 +40,12 @@ namespace Stratum.Test.Util
             AuthenticatorType.SteamOtp)] // Valid base32 (padding)
         [InlineData("a", false, AuthenticatorType.Totp, AuthenticatorType.Hotp,
             AuthenticatorType.SteamOtp)] // Too few bytes base32
-        [InlineData("AAAAAAAAAAAAAAAA", true, AuthenticatorType.MobileOtp)] // Valid (uppercase)
-        [InlineData("aaaaaaaaaaaaaaaa", true, AuthenticatorType.MobileOtp)] // Valid (lowercase)
-        [InlineData("aaaaaaaaaaaaaaa", false, AuthenticatorType.MobileOtp)] // Too few characters
+        [InlineData("ABCDEFGHIJKLMNOP1", false, AuthenticatorType.Totp, AuthenticatorType.Hotp,
+            AuthenticatorType.SteamOtp)] // Invalid base32
+        [InlineData("7AC61D4736F51A2B", true, AuthenticatorType.MobileOtp)] // Valid (uppercase)
+        [InlineData("7ac61d4736f51a2b", true, AuthenticatorType.MobileOtp)] // Valid (lowercase)
+        [InlineData("abcdef1234", false, AuthenticatorType.MobileOtp)] // Too few characters
+        [InlineData("0123456789abcdefg", false, AuthenticatorType.MobileOtp)] // Not hexadecimal
         [InlineData("aaaaaaaaaaaaaaa", false, AuthenticatorType.YandexOtp)] // Too few Yandex bytes
         public void Validate(string secret, bool isValid, params AuthenticatorType[] types)
         {

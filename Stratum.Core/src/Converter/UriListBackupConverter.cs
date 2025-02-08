@@ -28,9 +28,9 @@ namespace Stratum.Core.Converter
 
         protected ConversionResult ConvertText(string text)
         {
-            var lines = text.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+            var lines = text.Split(['\r', '\n'], StringSplitOptions.RemoveEmptyEntries);
 
-            if (!lines.Any(l => l.StartsWith("otpauth")))
+            if (!lines.All(l => l.StartsWith("otpauth") || l.StartsWith("motp")))
             {
                 throw new ArgumentException("Invalid file");
             }
@@ -50,6 +50,12 @@ namespace Stratum.Core.Converter
                 catch (Exception e)
                 {
                     failures.Add(new ConversionFailure { Description = line, Error = e.Message });
+                    continue;
+                }
+
+                if (auth.Type.HasPin() && string.IsNullOrEmpty(auth.Pin))
+                {
+                    failures.Add(new ConversionFailure { Description = line, Error = "Pin required but not provided" });
                     continue;
                 }
 

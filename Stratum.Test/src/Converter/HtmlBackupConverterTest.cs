@@ -1,6 +1,7 @@
 // Copyright (C) 2025 jmh
 // SPDX-License-Identifier: GPL-3.0-only
 
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Stratum.Core;
@@ -25,14 +26,20 @@ namespace Stratum.Test.Converter
 
             _htmlBackupConverter = new HtmlBackupConverter(iconResolver.Object);
         }
+        
+        [Fact]
+        public async Task ConvertAsync_noUris()
+        {
+            await Assert.ThrowsAsync<ArgumentException>(() => _htmlBackupConverter.ConvertAsync("testing 123"u8.ToArray()));
+        }
 
         [Fact]
-        public async Task ConvertAsync()
+        public async Task ConvertAsync_ok()
         {
             var result = await _htmlBackupConverter.ConvertAsync(_htmlBackupFixture.Data);
 
-            Assert.Empty(result.Failures);
-
+            Assert.Equal(2, result.Failures.Count);
+            
             Assert.Equal(7, result.Backup.Authenticators.Count());
             Assert.Null(result.Backup.Categories);
             Assert.Null(result.Backup.AuthenticatorCategories);

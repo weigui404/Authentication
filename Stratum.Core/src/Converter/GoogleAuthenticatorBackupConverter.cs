@@ -95,7 +95,7 @@ namespace Stratum.Core.Converter
             try
             {
                 secret = Base32.Rfc4648.Encode(auth.Secret);
-                secret = SecretUtil.Clean(secret, type);
+                secret = SecretUtil.Normalise(secret, type);
             }
             catch (Exception e)
             {

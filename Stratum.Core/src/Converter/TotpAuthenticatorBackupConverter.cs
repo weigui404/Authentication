@@ -149,7 +149,7 @@ namespace Stratum.Core.Converter
                     Period = period,
                     Digits = digits,
                     Algorithm = Authenticator.DefaultAlgorithm,
-                    Secret = SecretUtil.Clean(secret, Type),
+                    Secret = SecretUtil.Normalise(secret, Type),
                     Icon = iconResolver.FindServiceKeyByName(issuer)
                 };
             }

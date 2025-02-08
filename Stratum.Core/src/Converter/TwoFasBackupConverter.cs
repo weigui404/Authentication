@@ -204,7 +204,7 @@ namespace Stratum.Core.Converter
 
                 return new Authenticator
                 {
-                    Secret = SecretUtil.Clean(Secret, type),
+                    Secret = SecretUtil.Normalise(Secret, type),
                     Issuer = issuer.Truncate(Authenticator.IssuerMaxLength),
                     Username = username.Truncate(Authenticator.UsernameMaxLength),
                     Digits = digits,

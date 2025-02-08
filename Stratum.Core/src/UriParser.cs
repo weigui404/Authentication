@@ -173,7 +173,7 @@ namespace Stratum.Core
                 throw new ArgumentException("Secret parameter is required");
             }
 
-            secret = SecretUtil.Clean(secret, type);
+            secret = SecretUtil.Normalise(secret, type);
             var icon = iconResolver.FindServiceKeyByName(args.GetValueOrDefault("icon", issuer));
 
             var pinLength = 0;

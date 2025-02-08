@@ -9,7 +9,7 @@ namespace Stratum.Core.Util
 {
     public static class SecretUtil
     {
-        public static string Clean(string input, AuthenticatorType type)
+        public static string Normalise(string input, AuthenticatorType type)
         {
             if (type.HasBase32Secret())
             {
@@ -39,7 +39,7 @@ namespace Stratum.Core.Util
                 }
                 catch (Exception e)
                 {
-                    throw new ArgumentException("Error decoding secret", e);
+                    throw new ArgumentException("Error decoding secret as base 32", e);
                 }
 
                 if (bytes.Length == 0)
@@ -51,11 +51,22 @@ namespace Stratum.Core.Util
                 {
                     throw new ArgumentException("Secret is too short for Yandex OTP");
                 }
-            }
-
-            if (type == AuthenticatorType.MobileOtp && secret.Length < MobileOtp.SecretMinLength)
+            } 
+            else if (type.HasBase16Secret())
             {
-                throw new ArgumentException("Too few characters in secret for mOTP");
+                try
+                {
+                    Base16.LowerCase.Decode(secret);
+                }
+                catch (Exception e)
+                {
+                    throw new ArgumentException("Error decoding secret as hexadecimal", e);
+                }
+
+                if (type == AuthenticatorType.MobileOtp && secret.Length < MobileOtp.SecretMinLength)
+                {
+                    throw new ArgumentException("Too few characters in secret for mOTP");
+                }
             }
         }
     }

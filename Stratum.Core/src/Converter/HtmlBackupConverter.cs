@@ -1,6 +1,7 @@
 // Copyright (C) 2025 jmh
 // SPDX-License-Identifier: GPL-3.0-only
 
+using System;
 using System.Text;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
@@ -22,6 +23,11 @@ namespace Stratum.Core.Converter
             
             var builder = new StringBuilder();
             var nodes = document.DocumentNode.SelectNodes("//code");
+
+            if (nodes == null)
+            {
+                throw new ArgumentException("No URIs found in file");
+            }
 
             foreach (var node in nodes)
             {

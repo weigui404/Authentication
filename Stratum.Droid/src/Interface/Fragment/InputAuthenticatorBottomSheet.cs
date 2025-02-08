@@ -333,7 +333,7 @@ namespace Stratum.Droid.Interface.Fragment
                 isValid = false;
             }
 
-            secret = SecretUtil.Clean(secret, _type);
+            secret = SecretUtil.Normalise(secret, _type);
 
             try
             {

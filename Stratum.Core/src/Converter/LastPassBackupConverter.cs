@@ -146,7 +146,7 @@ namespace Stratum.Core.Converter
                 {
                     Type = AuthenticatorType.Totp,
                     Algorithm = algorithm,
-                    Secret = SecretUtil.Clean(Secret, AuthenticatorType.Totp),
+                    Secret = SecretUtil.Normalise(Secret, AuthenticatorType.Totp),
                     Digits = Digits,
                     Period = TimeStep,
                     Issuer = issuer.Truncate(Authenticator.IssuerMaxLength),

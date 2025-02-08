@@ -305,7 +305,7 @@ namespace Stratum.Core.Converter
                     secret = Hex.ToHexString(secretBytes);
                 }
 
-                return SecretUtil.Clean(secret, type);
+                return SecretUtil.Normalise(secret, type);
             }
 
             public Authenticator Convert(IIconResolver iconResolver)
