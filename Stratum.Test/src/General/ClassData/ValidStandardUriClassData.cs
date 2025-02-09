@@ -319,6 +319,19 @@ namespace Stratum.Test.General.ClassData
             }; // Steam parameter
             yield return new object[]
             {
+                "otpauth://totp/Maybe:SteamAccount?secret=Y2PO2DPO4AGBS2KQPO5ONQPEBAR2VKMF&period=30&digits=5&issuer=Maybe&encoder=steam",
+                new Authenticator
+                {
+                    Type = AuthenticatorType.SteamOtp,
+                    Digits = 5,
+                    Issuer = "Maybe",
+                    Username = "SteamAccount",
+                    Secret = "Y2PO2DPO4AGBS2KQPO5ONQPEBAR2VKMF"
+                },
+                0
+            }; // Steam encoder
+            yield return new object[]
+            {
                 "otpauth://yaotp/username?secret=ORSXG5DJNZTXIZLTORUW4ZZRGI&pin_length=4",
                 new Authenticator
                 {
