@@ -12,16 +12,14 @@ namespace Stratum.WearOS.Cache.View
 {
     public class AuthenticatorView : IReadOnlyList<WearAuthenticator>
     {
-        private readonly ListCache<WearAuthenticator> _cache;
+        private readonly AuthenticatorCache _cache;
         private List<WearAuthenticator> _view;
         private string _categoryId;
         private SortMode _sortMode;
 
-        public AuthenticatorView(ListCache<WearAuthenticator> cache, string categoryId, SortMode sortMode)
+        public AuthenticatorView(AuthenticatorCache cache)
         {
             _cache = cache;
-            _categoryId = categoryId;
-            _sortMode = sortMode;
             Update();
         }
 

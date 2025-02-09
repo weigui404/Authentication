@@ -11,10 +11,10 @@ namespace Stratum.WearOS.Cache.View
 {
     public class CategoryView : IReadOnlyList<WearCategory>
     {
-        private readonly ListCache<WearCategory> _cache;
+        private readonly CategoryCache _cache;
         private List<WearCategory> _view;
 
-        public CategoryView(ListCache<WearCategory> cache)
+        public CategoryView(CategoryCache cache)
         {
             _cache = cache;
             Update();

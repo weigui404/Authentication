@@ -15,7 +15,6 @@ using Stratum.Droid.Shared.Wear;
 using Google.Common.Util.Concurrent;
 using Java.Lang;
 using Java.Nio;
-using Stratum.WearOS.Activity;
 using Stratum.WearOS.Cache;
 using Stratum.WearOS.Util;
 
@@ -107,7 +106,7 @@ namespace Stratum.WearOS
                 else
                 {
                     var image = new ResourceBuilders.AndroidImageResourceByResId.Builder()
-                        .SetResourceId(IconResolver.GetService(request.Version, false))
+                        .SetResourceId(IconResolver.GetService(request.Version, true))
                         .Build();
 
                     imageBuilder.SetAndroidResourceByResId(image);
