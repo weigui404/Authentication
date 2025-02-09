@@ -23,6 +23,7 @@ namespace Stratum.Droid.Interface.Fragment
         public event EventHandler EnteAuthClicked;
         public event EventHandler WinAuthClicked;
         public event EventHandler TwoFasClicked;
+        public event EventHandler KeePassClicked; 
         public event EventHandler LastPassClicked;
         public event EventHandler AuthyClicked;
         public event EventHandler TotpAuthenticatorClicked;
@@ -56,6 +57,8 @@ namespace Stratum.Droid.Interface.Fragment
                     Resource.String.winAuthImportHint),
                 new SheetMenuItem(Resource.Drawable.ic_twofas, Resource.String.twoFas, TwoFasClicked,
                     Resource.String.twoFasImportHint),
+                new SheetMenuItem(Resource.Drawable.ic_keepass, Resource.String.keePass, KeePassClicked,
+                    Resource.String.keePassImportHint),
                 new SheetMenuItem(Resource.Drawable.ic_lastpass, Resource.String.lastPassAuthenticator, LastPassClicked,
                     Resource.String.lastPassAuthenticatorImportHint),
                 new SheetMenuItem(Resource.Drawable.ic_authy, Resource.String.authy, AuthyClicked,

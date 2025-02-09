@@ -83,11 +83,12 @@ namespace Stratum.Droid.Activity
         private const int RequestImportBitwarden = 12;
         private const int RequestImportEnteAuth = 13;
         private const int RequestImportTwoFas = 14;
-        private const int RequestImportLastPass = 15;
-        private const int RequestImportWinAuth = 16;
-        private const int RequestImportTotpAuthenticator = 17;
-        private const int RequestImportAuthenticatorPlus = 18;
-        private const int RequestImportUriList = 19;
+        private const int RequestImportKeePass = 15;
+        private const int RequestImportLastPass = 16;
+        private const int RequestImportWinAuth = 17;
+        private const int RequestImportTotpAuthenticator = 18;
+        private const int RequestImportAuthenticatorPlus = 19;
+        private const int RequestImportUriList = 20;
 
         // Data
         private readonly ILogger _log = Log.ForContext<MainActivity>();
@@ -351,6 +352,10 @@ namespace Stratum.Droid.Activity
 
                 case RequestImportTwoFas:
                     await ImportFromUri(new TwoFasBackupConverter(_iconResolver), intent.Data);
+                    break;
+                
+                case RequestImportKeePass:
+                    await ImportFromUri(new KeePassBackupConverter(_iconResolver), intent.Data);
                     break;
 
                 case RequestImportLastPass:
@@ -1275,6 +1280,8 @@ namespace Stratum.Droid.Activity
 
             fragment.TwoFasClicked += delegate { StartFilePickActivity("*/*", RequestImportTwoFas); };
 
+            fragment.KeePassClicked += delegate { StartFilePickActivity("*/*", RequestImportKeePass); };
+            
             fragment.LastPassClicked += delegate { StartFilePickActivity("*/*", RequestImportLastPass); };
 
             fragment.AuthyClicked += delegate
