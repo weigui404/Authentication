@@ -36,7 +36,7 @@ namespace Stratum.Test.Converter
                 _keePassBackupFixture.Aes256Argon2dData, _keePassBackupFixture.Aes256Argon2IdData,
                 _keePassBackupFixture.Aes256AesKdfData, _keePassBackupFixture.ChaCha20Argon2dData,
                 _keePassBackupFixture.TwoFishArgon2dData, _keePassBackupFixture.NoCompressionData,
-                _keePassBackupFixture.BigData
+                _keePassBackupFixture.BigData, _keePassBackupFixture.NoRecycleBinData
             };
 
             foreach (var variant in variants)
@@ -60,7 +60,7 @@ namespace Stratum.Test.Converter
                 _keePassBackupFixture.Aes256Argon2dData, _keePassBackupFixture.Aes256Argon2IdData,
                 _keePassBackupFixture.Aes256AesKdfData, _keePassBackupFixture.ChaCha20Argon2dData,
                 _keePassBackupFixture.TwoFishArgon2dData, _keePassBackupFixture.NoCompressionData,
-                _keePassBackupFixture.BigData
+                _keePassBackupFixture.BigData, _keePassBackupFixture.NoRecycleBinData
             };
 
             foreach (var variant in variants)

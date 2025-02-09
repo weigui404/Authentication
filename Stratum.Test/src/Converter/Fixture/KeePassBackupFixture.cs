@@ -17,6 +17,7 @@ namespace Stratum.Test.Converter.Fixture
             BigData = File.ReadAllBytes(Path.Join("data", "keepass.big.kdbx"));
             NoCompressionData = File.ReadAllBytes(Path.Join("data", "keepass.nocompression.kdbx"));
             RecycleBinData = File.ReadAllBytes(Path.Join("data", "keepass.recyclebin.kdbx"));
+            NoRecycleBinData = File.ReadAllBytes(Path.Join("data", "keepass.norecyclebin.kdbx"));
             Kdbx3Data = File.ReadAllBytes(Path.Join("data", "keepass.kdbx3.kdbx"));
         }
 
@@ -28,6 +29,7 @@ namespace Stratum.Test.Converter.Fixture
         public byte[] BigData { get; }
         public byte[] NoCompressionData { get; }
         public byte[] RecycleBinData { get; }
+        public byte[] NoRecycleBinData { get; }
         public byte[] Kdbx3Data { get; }
     }
 }
