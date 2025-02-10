@@ -27,58 +27,118 @@ namespace Stratum.Test.Converter
 
             _keePassBackupConverter = new KeePassBackupConverter(iconResolver.Object);
         }
-
-        [Fact]
-        public async Task ConvertAsync_ok()
+        
+        private async Task AssertConvertAsyncOk(byte[] data)
         {
-            var variants = new[]
-            {
-                _keePassBackupFixture.Aes256Argon2dData, _keePassBackupFixture.Aes256Argon2IdData,
-                _keePassBackupFixture.Aes256AesKdfData, _keePassBackupFixture.ChaCha20Argon2dData,
-                _keePassBackupFixture.TwoFishArgon2dData, _keePassBackupFixture.NoCompressionData,
-                _keePassBackupFixture.BigData, _keePassBackupFixture.NoRecycleBinData
-            };
+            var result = await _keePassBackupConverter.ConvertAsync(data, "test");
 
-            foreach (var variant in variants)
-            {
-                var result = await _keePassBackupConverter.ConvertAsync(variant, "test");
+            Assert.Empty(result.Failures);
 
-                Assert.Empty(result.Failures);
+            Assert.Equal(7, result.Backup.Authenticators.Count());
+            Assert.Null(result.Backup.Categories);
+            Assert.Null(result.Backup.AuthenticatorCategories);
+            Assert.Null(result.Backup.CustomIcons);
+        }
 
-                Assert.Equal(7, result.Backup.Authenticators.Count());
-                Assert.Null(result.Backup.Categories);
-                Assert.Null(result.Backup.AuthenticatorCategories);
-                Assert.Null(result.Backup.CustomIcons);
-            }
+        private async Task AssertConvertAsyncWrongPassword(byte[] data)
+        {
+            await Assert.ThrowsAsync<BackupPasswordException>(() =>
+                _keePassBackupConverter.ConvertAsync(data, "testing"));
         }
 
         [Fact]
-        public async Task ConvertAsync_wrongPassword()
+        public Task ConvertAsync_Aes256Argon2d_Ok()
         {
-            var variants = new[]
-            {
-                _keePassBackupFixture.Aes256Argon2dData, _keePassBackupFixture.Aes256Argon2IdData,
-                _keePassBackupFixture.Aes256AesKdfData, _keePassBackupFixture.ChaCha20Argon2dData,
-                _keePassBackupFixture.TwoFishArgon2dData, _keePassBackupFixture.NoCompressionData,
-                _keePassBackupFixture.BigData, _keePassBackupFixture.NoRecycleBinData
-            };
-
-            foreach (var variant in variants)
-            {
-                await Assert.ThrowsAsync<BackupPasswordException>(() =>
-                    _keePassBackupConverter.ConvertAsync(variant, "testing"));
-            }
+            return AssertConvertAsyncOk(_keePassBackupFixture.Aes256Argon2dData);
         }
 
         [Fact]
-        public async Task ConvertAsync_kdbx3()
+        public Task ConvertAsync_Aes256Argon2d_WrongPassword()
+        {
+            return AssertConvertAsyncWrongPassword(_keePassBackupFixture.Aes256Argon2dData);
+        }
+        
+        [Fact]
+        public Task ConvertAsync_Aes256Argon2Id_Ok()
+        {
+            return AssertConvertAsyncOk(_keePassBackupFixture.Aes256Argon2IdData);
+        }
+
+        [Fact]
+        public Task ConvertAsync_Aes256Argon2Id_WrongPassword()
+        {
+            return AssertConvertAsyncWrongPassword(_keePassBackupFixture.Aes256Argon2IdData);
+        }
+        
+        [Fact]
+        public Task ConvertAsync_Aes256AesKdf_Ok()
+        {
+            return AssertConvertAsyncOk(_keePassBackupFixture.Aes256AesKdfData);
+        }
+        
+        [Fact]
+        public Task ConvertAsync_Aes256AesKdf_WrongPassword()
+        {
+            return AssertConvertAsyncWrongPassword(_keePassBackupFixture.Aes256AesKdfData);
+        }
+        
+        [Fact]
+        public Task ConvertAsync_ChaCha20Argon2d_Ok()
+        {
+            return AssertConvertAsyncOk(_keePassBackupFixture.ChaCha20Argon2dData);
+        }
+        
+        [Fact]
+        public Task ConvertAsync_ChaCha20Argon2d_WrongPassword()
+        {
+            return AssertConvertAsyncWrongPassword(_keePassBackupFixture.ChaCha20Argon2dData);
+        }
+        
+        [Fact]
+        public Task ConvertAsync_TwoFishArgon2d_Ok()
+        {
+            return AssertConvertAsyncOk(_keePassBackupFixture.TwoFishArgon2dData);
+        }
+        
+        [Fact]
+        public Task ConvertAsync_TwoFishArgon2d_WrongPassword()
+        {
+            return AssertConvertAsyncWrongPassword(_keePassBackupFixture.TwoFishArgon2dData);
+        }
+        
+        [Fact]
+        public Task ConvertAsync_NoCompression()
+        {
+            return AssertConvertAsyncOk(_keePassBackupFixture.NoCompressionData);
+        }
+        
+        [Fact]
+        public Task ConvertAsync_MultiBlock()
+        {
+            return AssertConvertAsyncOk(_keePassBackupFixture.BigData);
+        }
+        
+        [Fact]
+        public Task ConvertAsync_GroupsAndSubgroups()
+        {
+            return AssertConvertAsyncOk(_keePassBackupFixture.GroupsData);
+        }
+        
+        [Fact]
+        public Task ConvertAsync_NoRecycleBin()
+        {
+            return AssertConvertAsyncOk(_keePassBackupFixture.NoRecycleBinData);
+        }
+
+        [Fact]
+        public async Task ConvertAsync_Kdbx3()
         {
             await Assert.ThrowsAsync<ArgumentException>(() =>
                 _keePassBackupConverter.ConvertAsync(_keePassBackupFixture.Kdbx3Data, "test"));
         }
 
         [Fact]
-        public async Task ConvertAsync_recycleBin()
+        public async Task ConvertAsync_InRecycleBin()
         {
             var result = await _keePassBackupConverter.ConvertAsync(_keePassBackupFixture.RecycleBinData, "test");
 

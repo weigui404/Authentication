@@ -77,9 +77,12 @@ namespace Stratum.Core.Converter
 
             var masterKey = GetMasterKey(header.MasterSalt, transformedKey);
 
-            await using var blockStream = await GetBlockStreamAsync(reader, header, masterKey, transformedKey);
-            var database = ReadDatabase(blockStream);
-            var uris = GetUris(database);
+            var uris = await Task.Run(() =>
+            {
+                using var blockStream = GetBlockStream(reader, header, masterKey, transformedKey);
+                var database = ReadDatabase(blockStream);
+                return GetUris(database);
+            });
 
             return ConvertLines(uris);
         }
@@ -202,7 +205,7 @@ namespace Stratum.Core.Converter
             return database;
         }
 
-        private static async Task<Stream> GetBlockStreamAsync(BinaryReader reader, Header header,
+        private static Stream GetBlockStream(BinaryReader reader, Header header, 
             byte[] masterKey, byte[] transformedKey)
         {
             var cipherDescription = header.EncryptionAlgorithm switch
@@ -217,28 +220,28 @@ namespace Stratum.Core.Converter
             var cipher = CipherUtilities.GetCipher(cipherDescription);
             cipher.Init(false, keyParameter);
 
-            var compressedStream = new MemoryStream();
-
-            Stream decompressionStream = header.CompressionAlgorithm switch
-            {
-                CompressionAlgorithm.None => compressedStream,
-                CompressionAlgorithm.GZip => new GZipStream(compressedStream, CompressionMode.Decompress),
-                _ => throw new ArgumentException($"Unsupported compression algorithm {header.CompressionAlgorithm}")
-            };
+            var decryptedStream = new MemoryStream();
 
             foreach (var blockData in ReadRawBlocks(reader, header.MasterSalt, transformedKey))
             {
                 if (blockData.Length == 0)
                 {
+                    decryptedStream.Write(cipher.DoFinal());
                     break;
                 }
 
-                var decrypted = await Task.Run(() => cipher.ProcessBytes(blockData));
-                await compressedStream.WriteAsync(decrypted);
+                var decrypted = cipher.ProcessBytes(blockData);
+                decryptedStream.Write(decrypted);
             }
 
-            compressedStream.Seek(0, SeekOrigin.Begin);
-            return decompressionStream;
+            decryptedStream.Seek(0, SeekOrigin.Begin);
+
+            return header.CompressionAlgorithm switch
+            {
+                CompressionAlgorithm.None => decryptedStream,
+                CompressionAlgorithm.GZip => new GZipStream(decryptedStream, CompressionMode.Decompress),
+                _ => throw new ArgumentException($"Unsupported compression algorithm {header.CompressionAlgorithm}")
+            };
         }
 
         private static HMACSHA256 GetBlockHmac(ulong blockId, byte[] masterSalt, byte[] transformedKey)
@@ -348,7 +351,7 @@ namespace Stratum.Core.Converter
             else
             {
                 var isArgon2d = kdfUuid.SequenceEqual(Argon2dUuid);
-                var isArgon2Id = kdfUuid.SequenceEqual(Argon2idUuid);
+                var isArgon2Id = !isArgon2d && kdfUuid.SequenceEqual(Argon2idUuid);
 
                 if (!isArgon2d && !isArgon2Id)
                 {

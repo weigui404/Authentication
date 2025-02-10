@@ -15,6 +15,7 @@ namespace Stratum.Test.Converter.Fixture
             ChaCha20Argon2dData = File.ReadAllBytes(Path.Join("data", "keepass.chacha20.argon2d.kdbx"));
             TwoFishArgon2dData = File.ReadAllBytes(Path.Join("data", "keepass.twofish.argon2d.kdbx"));
             BigData = File.ReadAllBytes(Path.Join("data", "keepass.big.kdbx"));
+            GroupsData = File.ReadAllBytes(Path.Join("data", "keepass.groups.kdbx"));
             NoCompressionData = File.ReadAllBytes(Path.Join("data", "keepass.nocompression.kdbx"));
             RecycleBinData = File.ReadAllBytes(Path.Join("data", "keepass.recyclebin.kdbx"));
             NoRecycleBinData = File.ReadAllBytes(Path.Join("data", "keepass.norecyclebin.kdbx"));
@@ -27,6 +28,7 @@ namespace Stratum.Test.Converter.Fixture
         public byte[] ChaCha20Argon2dData { get; }
         public byte[] TwoFishArgon2dData { get; }
         public byte[] BigData { get; }
+        public byte[] GroupsData { get; }
         public byte[] NoCompressionData { get; }
         public byte[] RecycleBinData { get; }
         public byte[] NoRecycleBinData { get; }
