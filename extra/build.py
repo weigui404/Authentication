@@ -11,6 +11,7 @@ import contextlib
 import xml.etree.ElementTree as ElementTree
 from typing import Generator
 
+PACKAGE_NAME = "com.stratumauth.app"
 REPO = "https://github.com/stratumauth/app.git"
 
 FRAMEWORK = "net9.0-android"
@@ -19,6 +20,13 @@ CONFIGURATION = "Release"
 PROJECT_NAMES = {
     "android": "Stratum.Droid",
     "wearos": "Stratum.WearOS",
+}
+
+RUNTIME_IDENTIFIERS = {
+    "android-arm": "armeabi-v7a",
+    "android-arm64": "arm64-v8a",
+    "android-x86": "x86",
+    "android-x64": "x86_64",
 }
 
 
@@ -38,7 +46,8 @@ def get_build_dir_path(output_path: str) -> Generator[str, None, None]:
 
 
 def adjust_csproj(build_dir: str, args: argparse.Namespace):
-    csproj_path = os.path.join(build_dir, args.project, f"{args.project}.csproj")
+    project_name = PROJECT_NAMES[args.project]
+    csproj_path = os.path.join(build_dir, project_name, f"{project_name}.csproj")
     csproj = ElementTree.parse(csproj_path)
 
     property_group = csproj.find("PropertyGroup")
@@ -47,9 +56,14 @@ def adjust_csproj(build_dir: str, args: argparse.Namespace):
     package_format.text = args.package
     property_group.append(package_format)
 
-    package_per_abi = ElementTree.Element("AndroidCreatePackagePerAbi")
-    package_per_abi.text = "true" if args.package == "apk" else "false"
-    property_group.append(package_per_abi)
+    runtime_identifiers = csproj.findall(".//RuntimeIdentifiers")
+
+    for element in runtime_identifiers:
+        element.text = (
+            args.runtime
+            if args.runtime is not None
+            else ";".join(RUNTIME_IDENTIFIERS.keys())
+        )
 
     if args.fdroid:
         define_constants = ElementTree.Element("DefineConstants")
@@ -63,6 +77,9 @@ def build_project(build_dir: str, args: argparse.Namespace):
     os.makedirs(args.output, exist_ok=True)
     build_args = [f"-f:{FRAMEWORK}", f"-c:{CONFIGURATION}"]
 
+    if args.runtime is not None:
+        build_args.append(f"-r:{args.runtime}")
+
     if args.keystore is not None:
         build_args += [
             "-p:AndroidKeyStore=True",
@@ -72,28 +89,40 @@ def build_project(build_dir: str, args: argparse.Namespace):
             f'-p:AndroidSigningKeyPass="{args.keystore_key_pass}"',
         ]
 
-    project_file_path = os.path.join(build_dir, args.project, f"{args.project}.csproj")
+    project_name = PROJECT_NAMES[args.project]
+    project_file_path = os.path.join(build_dir, project_name, f"{project_name}.csproj")
     subprocess.run(["dotnet", "publish", *build_args, project_file_path], check=True)
 
 
 def move_build_artifacts(args: argparse.Namespace, build_dir: str, output_dir: str):
-    publish_dir = os.path.join(
-        build_dir, args.project, "bin", CONFIGURATION, FRAMEWORK, "publish"
+    publish_dir = "publish" if args.runtime is None else args.runtime
+
+    artifact_dir = os.path.join(
+        build_dir,
+        PROJECT_NAMES[args.project],
+        "bin",
+        CONFIGURATION,
+        FRAMEWORK,
+        publish_dir,
     )
 
-    files = os.listdir(publish_dir)
+    files = os.listdir(artifact_dir)
 
     for file in filter(lambda f: "Signed" in f and f[-3:] == args.package, files):
-        artifact_path = os.path.join(publish_dir, file)
+        artifact_path = os.path.join(artifact_dir, file)
+        output_file = PACKAGE_NAME
 
-        if args.project == PROJECT_NAMES["wearos"]:
-            output_file = file.replace("-Signed", ".wearos")
+        if args.runtime is not None:
+            output_file += "-" + RUNTIME_IDENTIFIERS[args.runtime]
+
+        if args.project == "wearos":
+            output_file += ".wearos"
         elif args.fdroid:
-            output_file = file.replace("-Signed", ".fdroid")
-        else:
-            output_file = file.replace("-Signed", "")
+            output_file += ".fdroid"
 
+        output_file += "." + args.package
         output_path = os.path.join(output_dir, output_file)
+
         shutil.copy(artifact_path, output_path)
 
 
@@ -106,6 +135,7 @@ def get_args() -> argparse.Namespace:
         choices=PROJECT_NAMES.keys(),
         help="Project to build",
     )
+
     parser.add_argument(
         "package",
         metavar="T",
@@ -119,12 +149,22 @@ def get_args() -> argparse.Namespace:
         action=argparse.BooleanOptionalAction,
         help="Build without proprietary libraries (Wear OS)",
     )
+
+    parser.add_argument(
+        "--runtime",
+        type=str,
+        help="Runtime identifiers to use (defaults to all)",
+        choices=RUNTIME_IDENTIFIERS.keys(),
+        default=None,
+    )
+
     parser.add_argument(
         "--output",
         type=str,
         help="Build output path (defaults to 'out')",
         default="out",
     )
+
     parser.add_argument(
         "--branch", type=str, help="Branch to build from (uses default if not set)"
     )
@@ -157,7 +197,6 @@ def get_args() -> argparse.Namespace:
         args.keystore = get_full_path(args.keystore)
 
     args.output = get_full_path(args.output)
-    args.project = PROJECT_NAMES[args.project]
 
     return args
 
@@ -172,7 +211,14 @@ def main():
     args = get_args()
     validate_path()
 
-    print(f"Building {args.project} as {args.package}")
+    if args.fdroid:
+        print(f"Building {args.project} as {args.package} (F-Droid)")
+    else:
+        print(f"Building {args.project} as {args.package}")
+
+    print(
+        f"With runtimes {args.runtime if args.runtime is not None else ', '.join(RUNTIME_IDENTIFIERS.keys())}"
+    )
 
     with get_build_dir_path(args.output) as build_dir:
         git_command = ["git", "clone"]

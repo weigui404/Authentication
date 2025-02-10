@@ -40,6 +40,14 @@ jobs:
         run: |
           python extra/build.py android apk --branch "${{ github.ref_name }}" --fdroid --keystore "$GITHUB_WORKSPACE/keystore.jks" --keystore-pass "${{ secrets.KEYSTORE_PASS }}" --keystore-alias "${{ secrets.KEYSTORE_ALIAS }}" --keystore-key-pass "${{ secrets.KEYSTORE_KEY_PASS }}"
 
+      - name: Build Android APK (ARM) (F-Droid)
+        run: |
+          python extra/build.py android apk --branch "${{ github.ref_name }}" --fdroid --runtime android-arm --keystore "$GITHUB_WORKSPACE/keystore.jks" --keystore-pass "${{ secrets.KEYSTORE_PASS }}" --keystore-alias "${{ secrets.KEYSTORE_ALIAS }}" --keystore-key-pass "${{ secrets.KEYSTORE_KEY_PASS }}"
+
+      - name: Build Android APK (ARM64) (F-Droid)
+        run: |
+          python extra/build.py android apk --branch "${{ github.ref_name }}" --fdroid --runtime android-arm64 --keystore "$GITHUB_WORKSPACE/keystore.jks" --keystore-pass "${{ secrets.KEYSTORE_PASS }}" --keystore-alias "${{ secrets.KEYSTORE_ALIAS }}" --keystore-key-pass "${{ secrets.KEYSTORE_KEY_PASS }}"
+
       - name: Build Android AAB
         run: |
           python extra/build.py android aab --branch "${{ github.ref_name }}" --keystore "$GITHUB_WORKSPACE/keystore.jks" --keystore-pass "${{ secrets.KEYSTORE_PASS }}" --keystore-alias "${{ secrets.KEYSTORE_ALIAS }}" --keystore-key-pass "${{ secrets.KEYSTORE_KEY_PASS }}"
@@ -76,8 +84,6 @@ jobs:
           files: |
             out/com.stratumauth.app-arm64-v8a.fdroid.apk
             out/com.stratumauth.app-armeabi-v7a.fdroid.apk
-            out/com.stratumauth.app-x86.fdroid.apk
-            out/com.stratumauth.app-x86_64.fdroid.apk
             out/com.stratumauth.app.apk
             out/com.stratumauth.app.fdroid.apk
             out/com.stratumauth.app.wearos.apk
