@@ -1,7 +1,6 @@
 // Copyright (C) 2022 jmh
 // SPDX-License-Identifier: GPL-3.0-only
 
-using System;
 using Stratum.Core.Util;
 using SQLite;
 
@@ -21,7 +20,7 @@ namespace Stratum.Core.Entity
         public Category(string name)
         {
             name = name.Trim().Truncate(NameMaxLength);
-            Id = Guid.NewGuid().ToString();
+            Id = HashUtil.Sha1(name).Truncate(IdLength);
             Name = name;
             Ranking = 0;
         }
