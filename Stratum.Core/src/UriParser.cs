@@ -26,7 +26,7 @@ namespace Stratum.Core
         [GeneratedRegex("^(.*?):(.*)$")]
         private static partial Regex UsernameIssuerRegex();
 
-        [GeneratedRegex(@"^motp://(.*?):(.*?)\?secret=([a-fA-F\d]+)$")]
+        [GeneratedRegex(@"^motp://(.*?):(.*?)\?secret=(.*)$")]
         private static partial Regex MotpRegex();
 
         private static UriParseResult ParseMotpUri(string uri, IIconResolver iconResolver)

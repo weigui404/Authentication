@@ -52,21 +52,10 @@ namespace Stratum.Core.Util
                     throw new ArgumentException("Secret is too short for Yandex OTP");
                 }
             } 
-            else if (type.HasBase16Secret())
-            {
-                try
-                {
-                    Base16.LowerCase.Decode(secret);
-                }
-                catch (Exception e)
-                {
-                    throw new ArgumentException("Error decoding secret as hexadecimal", e);
-                }
 
-                if (type == AuthenticatorType.MobileOtp && secret.Length < MobileOtp.SecretMinLength)
-                {
-                    throw new ArgumentException("Too few characters in secret for mOTP");
-                }
+            if (type == AuthenticatorType.MobileOtp && secret.Length < MobileOtp.SecretMinLength)
+            {
+                throw new ArgumentException("Too few characters in secret for mOTP");
             }
         }
     }

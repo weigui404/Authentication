@@ -45,7 +45,6 @@ namespace Stratum.Test.Util
         [InlineData("7AC61D4736F51A2B", true, AuthenticatorType.MobileOtp)] // Valid (uppercase)
         [InlineData("7ac61d4736f51a2b", true, AuthenticatorType.MobileOtp)] // Valid (lowercase)
         [InlineData("abcdef1234", false, AuthenticatorType.MobileOtp)] // Too few characters
-        [InlineData("0123456789abcdefg", false, AuthenticatorType.MobileOtp)] // Not hexadecimal
         [InlineData("aaaaaaaaaaaaaaa", false, AuthenticatorType.YandexOtp)] // Too few Yandex bytes
         public void Validate(string secret, bool isValid, params AuthenticatorType[] types)
         {
