@@ -105,6 +105,9 @@ jobs:
           sudo apt-get -qq update
           sudo apt-get -yqq install fdroidserver
 
+          # TEMP: fix androguard compatibility
+          sudo pip install androguard==4.1.2 --break-system-packages
+
       - name: Prepare config
         run: |
           echo "keystorepass: '${{ secrets.KEYSTORE_PASS }}'" >> "$GITHUB_WORKSPACE/fdroid/config.yml"
