@@ -130,34 +130,40 @@ namespace Stratum.Core.Converter
             var recycleBinUuid = keepassDatabase.Document.SelectSingleNode("//RecycleBinUUID")?.InnerText;
             var uris = new List<string>();
 
-            foreach (XmlNode entryNode in keepassDatabase.Document.SelectNodes("//Entry"))
+            foreach (XmlNode valueNode in keepassDatabase.Document.SelectNodes("//Value"))
             {
-                var groupId = entryNode.ParentNode.SelectSingleNode("UUID")?.InnerText;
+                string value;
 
-                foreach (XmlNode stringNode in entryNode.SelectNodes("String"))
+                if (valueNode.Attributes != null &&
+                    valueNode.Attributes.GetNamedItem("Protected")?.Value == "True")
                 {
-                    var keyNode = stringNode.SelectSingleNode("Key");
-                    var valueNode = stringNode.SelectSingleNode("Value");
-                    string value;
+                    // Since this is a stream cipher we need to decrypt every protected field (even if unused)
+                    var valueBytes = Convert.FromBase64String(valueNode.InnerText);
+                    var decryptedBytes = cipher.ProcessBytes(valueBytes) ?? cipher.DoFinal(valueBytes);
+                    value = Encoding.UTF8.GetString(decryptedBytes);
+                }
+                else
+                {
+                    value = valueNode.InnerText;
+                }
+                
+                var itemNode = valueNode.ParentNode;
 
-                    if (valueNode.Attributes != null &&
-                        valueNode.Attributes.GetNamedItem("Protected")?.Value == "True")
-                    {
-                        // Since this is a stream cipher we need to decrypt every protected field (even if unused)
-                        var valueBytes = Convert.FromBase64String(valueNode.InnerText);
-                        var decryptedBytes = cipher.ProcessBytes(valueBytes) ?? cipher.DoFinal(valueBytes);
-                        value = Encoding.UTF8.GetString(decryptedBytes);
-                    }
-                    else
-                    {
-                        value = valueNode.InnerText;
-                    }
+                if (itemNode.Name != "String")
+                {
+                    continue;
+                }
+                
+                var keyNode = itemNode.SelectSingleNode("Key");
+                var entryNode = itemNode.ParentNode;
+                var groupNode = entryNode.ParentNode;
+                
+                var groupId = groupNode.SelectSingleNode("UUID")?.InnerText;
 
-                    if (keyNode.InnerText == "otp" && entryNode.ParentNode.Name != "History" &&
-                        groupId != recycleBinUuid)
-                    {
-                        uris.Add(value);
-                    }
+                if (keyNode.InnerText == "otp" && groupNode.Name != "History" &&
+                    groupId != recycleBinUuid)
+                {
+                    uris.Add(value);
                 }
             }
 
