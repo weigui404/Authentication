@@ -8,6 +8,7 @@ using Android.OS;
 using Android.Views;
 using Android.Widget;
 using AndroidX.Camera.Core;
+using AndroidX.Camera.Core.ResolutionSelector;
 using AndroidX.Camera.Lifecycle;
 using AndroidX.Camera.View;
 using AndroidX.Core.Graphics;
@@ -39,25 +40,31 @@ namespace Stratum.Droid.Activity
             flashButton.Click += OnFlashButtonClick;
 
             var provider = (ProcessCameraProvider) await ProcessCameraProvider.GetInstance(this).GetAsync();
-
             var preview = new Preview.Builder().Build();
-            var selector = new CameraSelector.Builder()
+            
+            var cameraSelector = new CameraSelector.Builder()
                 .RequireLensFacing(CameraSelector.LensFacingBack)
                 .Build();
 
             var executor = Executors.NewCachedThreadPool();
             preview.SetSurfaceProvider(executor, _previewView.SurfaceProvider);
 
+            var resolutionSelector = new ResolutionSelector.Builder()
+                .SetAspectRatioStrategy(AspectRatioStrategy.Ratio169FallbackAutoStrategy)
+                .SetAllowedResolutionMode(ResolutionSelector.PreferCaptureRateOverHigherResolution)
+                .Build();
+
             var analysis = new ImageAnalysis.Builder()
                 .SetBackpressureStrategy(ImageAnalysis.StrategyKeepOnlyLatest)
-                .SetOutputImageFormat(ImageAnalysis.OutputImageFormatRgba8888)
+                .SetOutputImageFormat(ImageAnalysis.OutputImageFormatYuv420888)
+                .SetResolutionSelector(resolutionSelector)
                 .Build();
             
             var analyser = new QrCodeImageAnalyser();
             analyser.QrCodeScanned += OnQrCodeScanned;
             analysis.SetAnalyzer(executor, analyser);
 
-            _camera = provider.BindToLifecycle(this, selector, analysis, preview);
+            _camera = provider.BindToLifecycle(this, cameraSelector, analysis, preview);
         }
 
         private void OnPreviewViewTouch(object sender, View.TouchEventArgs args)

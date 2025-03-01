@@ -14,16 +14,15 @@ namespace Stratum.Droid.QrCode
     public class QrCodeImageAnalyser : Java.Lang.Object, ImageAnalysis.IAnalyzer
     {
         public event EventHandler<string> QrCodeScanned;
-        public Size DefaultTargetResolution => new(640, 480);
+        public Size DefaultTargetResolution => new(1280, 720);
         
         private readonly ILogger _log = Log.ForContext<QrCodeImageAnalyser>();
 
         private readonly QrCodeReader _qrCodeReader = new(new ReaderOptions
         {
-            TryRotate = true,
             TryHarder = true,
             TryInvert = true,
-            Binarizer = Binarizer.LocalAverage
+            Binarizer = Binarizer.GlobalHistogram
         });
         
         public void Analyze(IImageProxy imageProxy)
@@ -45,16 +44,19 @@ namespace Stratum.Droid.QrCode
 
         private void AnalyseInternal(IImageProxy imageProxy)
         {
-            using var rgbaPlane = imageProxy.Image.GetPlanes()[0];
+            using var yuvPlane = imageProxy.Image.GetPlanes()[0];
             ReadOnlySpan<byte> bytes;
             
             unsafe
             {
-                var bufferAddress = rgbaPlane.Buffer.GetDirectBufferAddress().ToPointer();
-                bytes = new ReadOnlySpan<byte>(bufferAddress, rgbaPlane.Buffer.Capacity());
+                var bufferAddress = yuvPlane.Buffer.GetDirectBufferAddress().ToPointer();
+                bytes = new ReadOnlySpan<byte>(bufferAddress, yuvPlane.Buffer.Remaining());
             }
             
-            using var imageView = new ImageView(bytes, imageProxy.Width, imageProxy.Height, ImageFormat.RGBA);
+            using var imageView = new ImageView(bytes, imageProxy.Width, imageProxy.Height, ImageFormat.Lum, yuvPlane.RowStride);
+            imageView.Crop(imageProxy.CropRect.Left, imageProxy.CropRect.Top, imageProxy.CropRect.Width(), imageProxy.CropRect.Height());
+            imageView.Rotate(imageProxy.ImageInfo.RotationDegrees);
+            
             string result;
             
             try

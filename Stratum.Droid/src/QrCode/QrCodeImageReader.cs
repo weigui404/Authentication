@@ -37,7 +37,7 @@ namespace Stratum.Droid.QrCode
             
             var reader = new QrCodeReader(new ReaderOptions
             {
-                Binarizer = Binarizer.LocalAverage,
+                Binarizer = Binarizer.GlobalHistogram,
                 TryRotate = true,
                 TryHarder = true,
                 TryInvert = true
