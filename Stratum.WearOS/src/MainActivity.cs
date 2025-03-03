@@ -13,6 +13,7 @@ using Android.Gms.Wearable;
 using Android.OS;
 using Android.Views;
 using Android.Widget;
+using AndroidX.AppCompat.App;
 using AndroidX.Fragment.App;
 using AndroidX.Wear.Widget;
 using AndroidX.Wear.Widget.Drawer;
@@ -30,7 +31,7 @@ using Stratum.WearOS.Util;
 namespace Stratum.WearOS
 {
     [Activity(Label = "@string/displayName", MainLauncher = true, Icon = "@mipmap/ic_launcher", LaunchMode = LaunchMode.SingleInstance)]
-    public class MainActivity : FragmentActivity, IFragmentResultListener
+    public class MainActivity : AppCompatActivity, IFragmentResultListener
     {
         // Query Paths
         private const string ProtocolVersion = "protocol_v4.0";
