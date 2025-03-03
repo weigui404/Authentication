@@ -13,7 +13,6 @@ using Android.Gms.Wearable;
 using Android.OS;
 using Android.Views;
 using Android.Widget;
-using AndroidX.AppCompat.App;
 using AndroidX.Fragment.App;
 using AndroidX.Wear.Widget;
 using AndroidX.Wear.Widget.Drawer;
@@ -31,7 +30,7 @@ using Stratum.WearOS.Util;
 namespace Stratum.WearOS
 {
     [Activity(Label = "@string/displayName", MainLauncher = true, Icon = "@mipmap/ic_launcher", LaunchMode = LaunchMode.SingleInstance)]
-    public class MainActivity : AppCompatActivity, IFragmentResultListener
+    public class MainActivity : FragmentActivity, IFragmentResultListener
     {
         // Query Paths
         private const string ProtocolVersion = "protocol_v4.0";
@@ -44,12 +43,12 @@ namespace Stratum.WearOS
         private readonly SemaphoreSlim _onCreateLock;
         
         // Data
-        private readonly AuthenticatorView _authView;
-        private readonly CategoryView _categoryView;
+        private AuthenticatorView _authView;
+        private CategoryView _categoryView;
 
-        private readonly AuthenticatorCache _authCache;
-        private readonly CategoryCache _categoryCache;
-        private readonly CustomIconCache _customIconCache;
+        private AuthenticatorCache _authCache;
+        private CategoryCache _categoryCache;
+        private CustomIconCache _customIconCache;
 
         // Views
         private CircularProgressLayout _circularProgressLayout;
@@ -69,16 +68,7 @@ namespace Stratum.WearOS
 
         public MainActivity()
         {
-            Dependencies.Register(this);
-            
             _onCreateLock = new SemaphoreSlim(1, 1);
-
-            _authCache = Dependencies.Resolve<AuthenticatorCache>();
-            _categoryCache = Dependencies.Resolve<CategoryCache>();
-            _customIconCache = Dependencies.Resolve<CustomIconCache>();
-
-            _authView = Dependencies.Resolve<AuthenticatorView>();
-            _categoryView = Dependencies.Resolve<CategoryView>();
         }
 
         ~MainActivity()
@@ -108,6 +98,13 @@ namespace Stratum.WearOS
 
             SetTheme(Resource.Style.AppTheme);
             SetContentView(Resource.Layout.activityMain);
+
+            _authCache = Dependencies.Resolve<AuthenticatorCache>();
+            _categoryCache = Dependencies.Resolve<CategoryCache>();
+            _customIconCache = Dependencies.Resolve<CustomIconCache>();
+
+            _authView = Dependencies.Resolve<AuthenticatorView>();
+            _categoryView = Dependencies.Resolve<CategoryView>();
 
             _preferences = new PreferenceWrapper(this);
 

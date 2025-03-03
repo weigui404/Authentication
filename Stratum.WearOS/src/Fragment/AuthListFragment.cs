@@ -17,10 +17,10 @@ using Stratum.WearOS.Interface;
 
 namespace Stratum.WearOS.Fragment
 {
-    public class AuthListFragment : AndroidX.Fragment.App.Fragment
+    public class AuthListFragment() : AndroidX.Fragment.App.Fragment(Resource.Layout.fragmentList)
     {
-        private readonly AuthenticatorView _authView;
-        private readonly CustomIconCache _customIconCache;
+        private AuthenticatorView _authView;
+        private CustomIconCache _customIconCache;
         
         private PreferenceWrapper _preferences;
         
@@ -28,16 +28,12 @@ namespace Stratum.WearOS.Fragment
         private WearableRecyclerView _authList;
         private AuthenticatorListAdapter _authListAdapter;
 
-        public AuthListFragment() : base(Resource.Layout.fragmentList)
-        {
-            _authView = Dependencies.Resolve<AuthenticatorView>();
-            _customIconCache = Dependencies.Resolve<CustomIconCache>();
-        }
-
         public override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
             
+            _authView = Dependencies.Resolve<AuthenticatorView>();
+            _customIconCache = Dependencies.Resolve<CustomIconCache>();
             _preferences = new PreferenceWrapper(RequireContext());
             
             _authListAdapter = new AuthenticatorListAdapter(_authView, _customIconCache, _preferences.ShowUsernames);
