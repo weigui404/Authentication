@@ -44,16 +44,16 @@ namespace Stratum.Droid.QrCode
 
         private void AnalyseInternal(IImageProxy imageProxy)
         {
-            using var yuvPlane = imageProxy.Image.GetPlanes()[0];
+            using var lumPlane = imageProxy.Image.GetPlanes()[0];
             ReadOnlySpan<byte> bytes;
             
             unsafe
             {
-                var bufferAddress = yuvPlane.Buffer.GetDirectBufferAddress().ToPointer();
-                bytes = new ReadOnlySpan<byte>(bufferAddress, yuvPlane.Buffer.Remaining());
+                var bufferAddress = lumPlane.Buffer.GetDirectBufferAddress().ToPointer();
+                bytes = new ReadOnlySpan<byte>(bufferAddress, lumPlane.Buffer.Remaining());
             }
             
-            using var imageView = new ImageView(bytes, imageProxy.Width, imageProxy.Height, ImageFormat.Lum, yuvPlane.RowStride);
+            using var imageView = new ImageView(bytes, imageProxy.Width, imageProxy.Height, ImageFormat.Lum, lumPlane.RowStride, lumPlane.PixelStride);
             imageView.Crop(imageProxy.CropRect.Left, imageProxy.CropRect.Top, imageProxy.CropRect.Width(), imageProxy.CropRect.Height());
             imageView.Rotate(imageProxy.ImageInfo.RotationDegrees);
             
