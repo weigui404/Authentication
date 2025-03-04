@@ -94,8 +94,7 @@ namespace Stratum.Droid.Interface.Fragment
 
             if (_canUseBiometrics)
             {
-                var handler = new Handler(Looper.MainLooper);
-                handler.PostDelayed(ShowBiometricPrompt, 400);
+                ShowBiometricPrompt();
             }
             else
             {
