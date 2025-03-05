@@ -10,7 +10,6 @@
         <ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
         <LangVersion>13</LangVersion>
         <AndroidVersionCodePattern>{versionCode}</AndroidVersionCodePattern>
-        <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
     </PropertyGroup>
     <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
         <AndroidUseSharedRuntime>true</AndroidUseSharedRuntime>
