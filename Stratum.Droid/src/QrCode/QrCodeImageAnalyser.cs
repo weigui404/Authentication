@@ -24,6 +24,8 @@ namespace Stratum.Droid.QrCode
             TryInvert = true,
             Binarizer = Binarizer.GlobalHistogram
         });
+
+        private byte[] _buffer = [];
         
         public void Analyze(IImageProxy imageProxy)
         {
@@ -47,10 +49,15 @@ namespace Stratum.Droid.QrCode
             using var lumPlane = imageProxy.Image.GetPlanes()[0];
             
             lumPlane.Buffer.Rewind();
-            var bytes = new byte[lumPlane.Buffer.Remaining()];
-            lumPlane.Buffer.Get(bytes);
+
+            if (lumPlane.Buffer.Remaining() != _buffer.Length)
+            {
+                _buffer = new byte[lumPlane.Buffer.Remaining()];
+            }
             
-            using var imageView = new ImageView(bytes, imageProxy.Width, imageProxy.Height, ImageFormat.Lum, lumPlane.RowStride, lumPlane.PixelStride);
+            lumPlane.Buffer.Get(_buffer);
+            
+            using var imageView = new ImageView(_buffer, imageProxy.Width, imageProxy.Height, ImageFormat.Lum, lumPlane.RowStride, lumPlane.PixelStride);
             imageView.Crop(imageProxy.CropRect.Left, imageProxy.CropRect.Top, imageProxy.CropRect.Width(), imageProxy.CropRect.Height());
             imageView.Rotate(imageProxy.ImageInfo.RotationDegrees);
             
