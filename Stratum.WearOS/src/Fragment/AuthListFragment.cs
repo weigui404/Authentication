@@ -43,9 +43,9 @@ namespace Stratum.WearOS.Fragment
             _authListAdapter.DefaultAuth = _preferences.DefaultAuth;
         }
 
-        public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+        public override void OnViewCreated(View view, Bundle savedInstanceState)
         {
-            var view = base.OnCreateView(inflater, container, savedInstanceState);
+            base.OnViewCreated(view, savedInstanceState);
             
             _emptyLayout = view.FindViewById<RelativeLayout>(Resource.Id.layoutEmpty);
             
@@ -60,10 +60,8 @@ namespace Stratum.WearOS.Fragment
             _authList.SetAdapter(_authListAdapter);
             
             CheckEmptyState();
-            
-            return view;
         }
-        
+
         private void CheckEmptyState()
         {
             if (!_authView.Any())

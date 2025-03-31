@@ -37,9 +37,9 @@ namespace Stratum.WearOS.Fragment
             _codeGroupSize = preferences.CodeGroupSize;
         }
 
-        public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+        public override void OnViewCreated(View view, Bundle savedInstanceState)
         {
-            var view = base.OnCreateView(inflater, container, savedInstanceState);
+            base.OnViewCreated(view, savedInstanceState);
 
             var swipeDismissLayout = view.FindViewById<SwipeDismissFrameLayout>(Resource.Id.layoutSwipeDismiss);
             
@@ -120,8 +120,6 @@ namespace Stratum.WearOS.Fragment
 
             _authProgressLayout.Period = _period * 1000;
             _authProgressLayout.TimerFinished += Refresh;
-
-            return view;
         }
 
         public override void OnResume()
