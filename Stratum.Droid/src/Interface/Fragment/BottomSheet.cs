@@ -36,7 +36,6 @@ namespace Stratum.Droid.Interface.Fragment
         }
 
         protected bool IsDark { get; private set; }
-        public event EventHandler Dismissed;
 
         public override Dialog OnCreateDialog(Bundle savedInstanceState)
         {
@@ -77,12 +76,6 @@ namespace Stratum.Droid.Interface.Fragment
             }
 
             return dialog;
-        }
-
-        public override void OnDismiss(IDialogInterface dialog)
-        {
-            base.OnDismiss(dialog);
-            Dismissed?.Invoke(this, EventArgs.Empty);
         }
 
         public override View OnCreateView(LayoutInflater contextInflater, ViewGroup container,

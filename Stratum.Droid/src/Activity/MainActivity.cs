@@ -222,14 +222,11 @@ namespace Stratum.Droid.Activity
                 // Locked and has password, wait for unlock in unlockbottomsheet
                 case false when Preferences.PasswordProtected:
                 {
-                    if (_unlockFragmentOpen)
-                    {
-                        break;
-                    }
+                    DismissUnlockSheet();
 
                     var fragment = new UnlockBottomSheet();
                     fragment.UnlockAttempted += OnUnlockAttempted;
-                    fragment.Dismissed += async delegate
+                    fragment.Cancelled += async delegate
                     {
                         _unlockFragmentOpen = false;
 
@@ -268,6 +265,11 @@ namespace Stratum.Droid.Activity
 
             _timer?.Stop();
             _pauseTime = DateTime.UtcNow;
+
+            if (_unlockFragmentOpen)
+            {
+                DismissUnlockSheet();
+            }
 
             RunOnUiThread(delegate
             {
@@ -681,6 +683,17 @@ namespace Stratum.Droid.Activity
 
             _preventBackupReminder = false;
             TriggerAutoBackupWorker();
+        }
+
+        private void DismissUnlockSheet()
+        {
+            var fragment = SupportFragmentManager.Fragments.FirstOrDefault(f => f is UnlockBottomSheet);
+
+            if (fragment != null)
+            {
+                var unlockSheet = (UnlockBottomSheet) fragment;
+                unlockSheet.Dismiss();
+            }
         }
 
         #endregion

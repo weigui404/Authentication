@@ -39,6 +39,7 @@ namespace Stratum.Droid.Interface.Fragment
         }
 
         public event EventHandler<string> UnlockAttempted;
+        public event EventHandler Cancelled;
 
         public override Dialog OnCreateDialog(Bundle savedInstanceState)
         {
@@ -51,6 +52,12 @@ namespace Stratum.Droid.Interface.Fragment
             var dialog = (BottomSheetDialog) base.OnCreateDialog(savedInstanceState);
             dialog.OnBackPressedDispatcher.AddCallback(this, backPressCallback);
             return dialog;
+        }
+
+        public override void OnCancel(IDialogInterface dialog)
+        {
+            base.OnCancel(dialog);
+            Cancelled?.Invoke(this, EventArgs.Empty); 
         }
 
         public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
