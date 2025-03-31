@@ -34,7 +34,7 @@
         <PackageReference Include="Serilog.Exceptions" Version="8.4.0" />
         <PackageReference Include="Serilog.Sinks.File" Version="6.0.0" />
         <PackageReference Include="sqlite-net-sqlcipher" Version="1.9.172" />
-        <PackageReference Include="SQLitePCLRaw.bundle_e_sqlcipher" Version="2.1.10" />
+        <PackageReference Include="SQLitePCLRaw.bundle_e_sqlcipher" Version="2.1.11" />
         <PackageReference Include="TinyIoC" Version="1.4.0-rc1">
             <PrivateAssets>all</PrivateAssets>
         </PackageReference>
@@ -43,7 +43,7 @@
         <PackageReference Include="Xamarin.AndroidX.Camera.Camera2" Version="1.4.1.1" />
         <PackageReference Include="Xamarin.AndroidX.Camera.Core" Version="1.4.1.1" />
         <PackageReference Include="Xamarin.AndroidX.Camera.View" Version="1.4.1.1" />
-        <PackageReference Include="Xamarin.AndroidX.ConstraintLayout" Version="2.2.0.2" />
+        <PackageReference Include="Xamarin.AndroidX.ConstraintLayout" Version="2.2.1" />
         <PackageReference Include="Xamarin.AndroidX.Lifecycle.Common" Version="2.8.7.2" />
         <PackageReference Include="Xamarin.AndroidX.Lifecycle.Extensions" Version="2.2.0.31" />
         <PackageReference Include="Xamarin.AndroidX.Lifecycle.LiveData" Version="2.8.7.2" />
