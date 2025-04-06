@@ -151,12 +151,9 @@ namespace Stratum.Droid
         private static string GetPath()
         {
             var appDataDir = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-            
-            return Path.Combine(
-                Directory.GetParent(appDataDir).FullName,
-                "databases",
-                FileName
-            );
+            var databasesDir = Path.Combine(Directory.GetParent(appDataDir).FullName, "databases");
+            Directory.CreateDirectory(databasesDir);
+            return Path.Combine(databasesDir, FileName);
         }
 
         public async Task SetPasswordAsync(string currentPassword, string newPassword)
