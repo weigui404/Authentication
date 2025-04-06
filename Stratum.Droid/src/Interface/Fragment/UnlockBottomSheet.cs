@@ -47,6 +47,7 @@ namespace Stratum.Droid.Interface.Fragment
             backPressCallback.BackPressed += delegate
             {
                 Dismiss();
+                Cancelled?.Invoke(this, EventArgs.Empty);
             };
 
             var dialog = (BottomSheetDialog) base.OnCreateDialog(savedInstanceState);
