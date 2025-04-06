@@ -21,10 +21,18 @@ namespace Stratum.WearOS.Fragment
     public class CodeFragment() : AndroidX.Fragment.App.Fragment(Resource.Layout.fragmentCode)
     {
         private IGenerator _generator;
-
         private int _codeGroupSize;
+
+        private AuthenticatorType _type;
+        private string _issuer;
+        private string _username;
         private int _period;
         private int _digits;
+        private string _secret;
+        private string _pin;
+        private HashAlgorithm _algorithm;
+        private string _icon;
+        private Bitmap _customIcon;
 
         private AuthProgressLayout _authProgressLayout;
         private TextView _codeTextView;
@@ -35,6 +43,39 @@ namespace Stratum.WearOS.Fragment
 
             var preferences = new PreferenceWrapper(RequireContext());
             _codeGroupSize = preferences.CodeGroupSize;
+
+            _type = (AuthenticatorType) Arguments.GetInt("type");
+            _username = Arguments.GetString("username");
+            _issuer = Arguments.GetString("issuer");
+            _period = Arguments.GetInt("period");
+            _digits = Arguments.GetInt("digits");
+            _secret = Arguments.GetString("secret");
+            _pin = Arguments.GetString("pin");
+            _algorithm = (HashAlgorithm) Arguments.GetInt("algorithm");
+            
+            var hasCustomIcon = Arguments.GetBoolean("hasCustomIcon");
+
+            if (hasCustomIcon)
+            {
+                if (Build.VERSION.SdkInt >= BuildVersionCodes.Tiramisu)
+                {
+#pragma warning disable CA1416
+                    _customIcon = (Bitmap) Arguments.GetParcelable("icon", Class.FromType(typeof(Bitmap)));
+#pragma warning restore CA1416
+                }
+                else
+                {
+#pragma warning disable CA1422
+                    _customIcon = (Bitmap) Arguments.GetParcelable("icon");
+#pragma warning restore CA1422
+                }
+            }
+            else
+            {
+                _icon = Arguments.GetString("icon");
+            }
+            
+            _generator = AuthenticatorUtil.GetGenerator(_type, _secret, _pin, _period, _algorithm, _digits);
         }
 
         public override void OnViewCreated(View view, Bundle savedInstanceState)
@@ -58,65 +99,31 @@ namespace Stratum.WearOS.Fragment
             var issuerText = view.FindViewById<TextView>(Resource.Id.textIssuer);
             var usernameText = view.FindViewById<TextView>(Resource.Id.textUsername);
 
-            var username = Arguments.GetString("username");
-            var issuer = Arguments.GetString("issuer");
+            issuerText.Text = _issuer;
 
-            issuerText.Text = issuer;
-
-            if (string.IsNullOrEmpty(username))
+            if (string.IsNullOrEmpty(_username))
             {
                 usernameText.Visibility = ViewStates.Gone;
             }
             else
             {
-                usernameText.Text = username;
+                usernameText.Text = _username;
             }
 
             var iconView = view.FindViewById<ImageView>(Resource.Id.imageIcon);
-            var hasCustomIcon = Arguments.GetBoolean("hasCustomIcon");
 
-            if (hasCustomIcon)
+            if (_customIcon != null)
             {
-                Bitmap bitmap;
-                
-                if (Build.VERSION.SdkInt >= BuildVersionCodes.Tiramisu)
-                {
-#pragma warning disable CA1416
-                    bitmap = (Bitmap) Arguments.GetParcelable("icon", Class.FromType(typeof(Bitmap)));
-#pragma warning restore CA1416
-                }
-                else
-                {
-#pragma warning disable CA1422
-                    bitmap = (Bitmap) Arguments.GetParcelable("icon");
-#pragma warning restore CA1422
-                }
-
-                if (bitmap != null)
-                {
-                    iconView.SetImageBitmap(bitmap);
-                }
-                else
-                {
-                    iconView.SetImageResource(IconResolver.GetService(IconResolver.Default, true));
-                }
+                iconView.SetImageBitmap(_customIcon);
+            }
+            else if (_icon != null)
+            {
+                iconView.SetImageResource(IconResolver.GetService(_icon, true));
             }
             else
             {
-                iconView.SetImageResource(IconResolver.GetService(Arguments.GetString("icon"), true));
+                iconView.SetImageResource(IconResolver.GetService(IconResolver.Default, true));
             }
-
-            _period = Arguments.GetInt("period");
-            _digits = Arguments.GetInt("digits");
-
-            var algorithm = (HashAlgorithm) Arguments.GetInt("algorithm");
-
-            var secret = Arguments.GetString("secret");
-            var pin = Arguments.GetString("pin");
-
-            var type = (AuthenticatorType) Arguments.GetInt("type");
-
-            _generator = AuthenticatorUtil.GetGenerator(type, secret, pin, _period, algorithm, _digits);
 
             _authProgressLayout.Period = _period * 1000;
             _authProgressLayout.TimerFinished += Refresh;
