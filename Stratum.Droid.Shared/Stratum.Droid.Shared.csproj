@@ -11,7 +11,7 @@
             <PrivateAssets>all</PrivateAssets>
         </PackageReference>
         <PackageReference Include="Newtonsoft.Json" Version="13.0.3"/>
-        <PackageReference Include="Xamarin.AndroidX.Preference" Version="1.2.1.12" />
+        <PackageReference Include="Xamarin.AndroidX.Preference" Version="1.2.1.13" />
     </ItemGroup>
     <ItemGroup>
         <ProjectReference Include="..\Stratum.Core\Stratum.Core.csproj" />
