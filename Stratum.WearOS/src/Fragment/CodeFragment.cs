@@ -132,7 +132,11 @@ namespace Stratum.WearOS.Fragment
         public override void OnResume()
         {
             base.OnResume();
-            Refresh();
+
+            if (_codeTextView != null && _authProgressLayout != null)
+            {
+                Refresh();
+            }
         }
 
         public override void OnPause()
