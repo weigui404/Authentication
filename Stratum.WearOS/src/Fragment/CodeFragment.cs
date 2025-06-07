@@ -142,7 +142,7 @@ namespace Stratum.WearOS.Fragment
         public override void OnPause()
         {
             base.OnPause();
-            _authProgressLayout.StopTimer();
+            _authProgressLayout?.StopTimer();
         }
 
         private void Refresh(object sender = null, ElapsedEventArgs args = null)

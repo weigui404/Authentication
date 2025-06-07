@@ -311,7 +311,7 @@ namespace Stratum.WearOS
                 .SetCustomAnimations(Resource.Animation.slidein, Resource.Animation.fadeout)
                 .Add(Resource.Id.viewFragment, fragment)
                 .AddToBackStack(null)
-                .Commit();
+                .CommitAllowingStateLoss();
         }
 
         private void CheckOfflineState()
