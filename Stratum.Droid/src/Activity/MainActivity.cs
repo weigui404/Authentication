@@ -60,7 +60,8 @@ namespace Stratum.Droid.Activity
     [Activity(Label = "@string/displayName", Theme = "@style/MainActivityTheme", MainLauncher = true,
         Name = "com.stratumauth.app.MainActivity", Icon = "@mipmap/ic_launcher",
         WindowSoftInputMode = SoftInput.AdjustPan, 
-        ConfigurationChanges = ConfigChanges.Orientation | ConfigChanges.ScreenSize)]
+        ConfigurationChanges = ConfigChanges.Orientation | ConfigChanges.ScreenSize,
+        EnableOnBackInvokedCallback = true)]
     [IntentFilter(new[] { Intent.ActionView }, Categories = new[] { Intent.CategoryDefault, Intent.CategoryBrowsable },
         DataSchemes = new[] { "otpauth", "otpauth-migration" })]
     public class MainActivity : AsyncActivity
@@ -120,6 +121,7 @@ namespace Stratum.Droid.Activity
         private AuthenticatorListAdapter _authenticatorListAdapter;
         private AutoGridLayoutManager _authenticatorLayout;
         private ReorderableListTouchHelperCallback _authenticatorTouchHelperCallback;
+        private BackPressCallback _backPressCallback;
 
         // State
         private SecureStorageWrapper _secureStorageWrapper;
@@ -189,9 +191,9 @@ namespace Stratum.Droid.Activity
 
             RunOnUiThread(InitAuthenticatorList);
 
-            var backPressCallback = new BackPressCallback(true);
-            backPressCallback.BackPressed += OnBackButtonPressed;
-            OnBackPressedDispatcher.AddCallback(backPressCallback);
+            _backPressCallback = new BackPressCallback(true);
+            _backPressCallback.BackPressed += OnBackButtonPressed;
+            OnBackPressedDispatcher.AddCallback(_backPressCallback);
 
             _timer = new Timer { Interval = 1000, AutoReset = true };
             _timer.Elapsed += delegate { RunOnUiThread(delegate { _authenticatorListAdapter.Tick(); }); };
@@ -546,34 +548,21 @@ namespace Stratum.Droid.Activity
 
         private async void OnBackButtonPressed(object sender, EventArgs args)
         {
-            var searchBarWasClosed = false;
+            var searchItem = Toolbar?.Menu.FindItem(Resource.Id.actionSearch);
 
-            RunOnUiThread(delegate
+            if (searchItem is { IsActionViewExpanded: true })
             {
-                var searchItem = Toolbar?.Menu.FindItem(Resource.Id.actionSearch);
-
-                if (searchItem == null || !searchItem.IsActionViewExpanded)
-                {
-                    return;
-                }
-
-                searchItem.CollapseActionView();
-                searchBarWasClosed = true;
-            });
-
-            if (searchBarWasClosed)
-            {
+                RunOnUiThread(delegate { searchItem.CollapseActionView(); });
                 return;
             }
 
             var defaultCategory = Preferences.DefaultCategory;
-
+            
             if (defaultCategory == null)
             {
                 if (_authenticatorView.CategoryId != null)
                 {
                     await SwitchCategory(null);
-                    return;
                 }
             }
             else
@@ -581,11 +570,8 @@ namespace Stratum.Droid.Activity
                 if (_authenticatorView.CategoryId != defaultCategory)
                 {
                     await SwitchCategory(defaultCategory);
-                    return;
                 }
             }
-
-            Finish();
         }
 
         public override void OnRequestPermissionsResult(int requestCode, string[] permissions,
@@ -673,6 +659,8 @@ namespace Stratum.Droid.Activity
             }
 
             CheckEmptyState();
+            UpdateBackpressIntercept();
+            
             RunOnUiThread(delegate { _authenticatorListAdapter.Tick(); });
 
             if (!_preventBackupReminder && Preferences.ShowBackupReminders &&
@@ -896,6 +884,33 @@ namespace Stratum.Droid.Activity
                 _timer.Start();
             }
         }
+        
+        private void UpdateBackpressIntercept()
+        {
+            bool shouldInterceptBackpress;
+
+            var searchItem = Toolbar?.Menu.FindItem(Resource.Id.actionSearch);
+
+            if (searchItem is { IsActionViewExpanded: true })
+            {
+                shouldInterceptBackpress = true;
+            }
+            else
+            {
+                var defaultCategory = Preferences.DefaultCategory;
+
+                if (defaultCategory == null)
+                {
+                    shouldInterceptBackpress = _authenticatorView.CategoryId != null;
+                }
+                else
+                {
+                    shouldInterceptBackpress = _authenticatorView.CategoryId != defaultCategory;
+                }
+            }
+
+            _backPressCallback.Enabled = shouldInterceptBackpress;
+        }
 
         private async Task SwitchCategory(string id)
         {
@@ -919,6 +934,7 @@ namespace Stratum.Droid.Activity
                 categoryName = category.Name;
             }
 
+            UpdateBackpressIntercept();
             CheckEmptyState();
 
             RunOnUiThread(delegate

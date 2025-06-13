@@ -31,7 +31,7 @@ using Toolbar = AndroidX.AppCompat.Widget.Toolbar;
 
 namespace Stratum.Droid.Activity
 {
-    [Activity]
+    [Activity(EnableOnBackInvokedCallback = true)]
     public class IconPacksActivity : SensitiveSubActivity
     {
         private const int RequestAdd = 0;

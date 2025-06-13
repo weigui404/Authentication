@@ -16,7 +16,7 @@ using Stratum.Droid.Util;
 
 namespace Stratum.Droid.Activity
 {
-    [Activity]
+    [Activity(EnableOnBackInvokedCallback = true)]
     public class ErrorActivity : BaseActivity
     {
         private string _exception;

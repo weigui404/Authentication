@@ -22,7 +22,7 @@ using Path = System.IO.Path;
 
 namespace Stratum.Droid.Activity
 {
-    [Activity]
+    [Activity(EnableOnBackInvokedCallback = true)]
     public class AboutActivity : BaseActivity
     {
         private readonly ILogger _log = Log.ForContext<AboutActivity>();

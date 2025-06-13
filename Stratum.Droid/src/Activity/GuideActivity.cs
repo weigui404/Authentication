@@ -14,7 +14,7 @@ using Google.Android.Material.Card;
 
 namespace Stratum.Droid.Activity
 {
-    [Activity]
+    [Activity(EnableOnBackInvokedCallback = true)]
     public class GuideActivity : BaseActivity
     {
         public GuideActivity() : base(Resource.Layout.activityGuide)

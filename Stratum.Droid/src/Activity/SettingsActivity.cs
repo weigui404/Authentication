@@ -23,7 +23,7 @@ using BiometricPrompt = AndroidX.Biometric.BiometricPrompt;
 
 namespace Stratum.Droid.Activity
 {
-    [Activity]
+    [Activity(EnableOnBackInvokedCallback = true)]
     public class SettingsActivity : SensitiveSubActivity, ISharedPreferencesOnSharedPreferenceChangeListener
     {
         private readonly ILogger _log = Log.ForContext<SettingsActivity>();
