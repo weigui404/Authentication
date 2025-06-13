@@ -39,7 +39,7 @@
                 android:text="@string/autoBackupHelp"/>
 
             <com.google.android.material.card.MaterialCardView
-                style="?attr/materialCardViewElevatedStyle"
+                style="?attr/materialCardViewOutlinedStyle"
                 android:id="@+id/cardSelectLocation"
                 android:focusable="true"
                 android:clickable="true"
@@ -89,7 +89,7 @@
             </com.google.android.material.card.MaterialCardView>
 
             <com.google.android.material.card.MaterialCardView
-                style="?attr/materialCardViewElevatedStyle"
+                style="?attr/materialCardViewOutlinedStyle"
                 android:id="@+id/cardSetPassword"
                 android:focusable="true"
                 android:clickable="true"
