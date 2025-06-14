@@ -79,7 +79,7 @@ namespace Stratum.WearOS.Interface
         private void DrawProgress()
         {
             var timeRemaining = Period - _timeSinceStart;
-            var progress = 1f - (float) timeRemaining / Period;
+            var progress = (float) timeRemaining / Period;
             _progressDrawable.SetStartEndTrim(0f, progress);
             Invalidate();
         }
