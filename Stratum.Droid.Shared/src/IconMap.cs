@@ -677,6 +677,7 @@ namespace Stratum.Droid.Shared
             { "technicpack", Resource.Drawable.auth_technicpack },
             { "techpowerup", Resource.Drawable.auth_techpowerup },
             { "telnyx", Resource.Drawable.auth_telnyx },
+            { "tencentcloud", Resource.Drawable.auth_tencentcloud },
             { "termius", Resource.Drawable.auth_termius },
             { "tesla", Resource.Drawable.auth_tesla },
             { "therapynotes", Resource.Drawable.auth_therapynotes },
