@@ -175,15 +175,12 @@ namespace Stratum.Droid.Activity
             {
                 _pauseTime = new DateTime(savedInstanceState.GetLong("pauseTime"));
                 _lastBackupReminderTime = new DateTime(savedInstanceState.GetLong("lastBackupReminderTime"));
+                _authenticatorView.CategoryId = Preferences.DefaultCategory ?? savedInstanceState.GetString("categoryId");
             }
             else
             {
                 _pauseTime = DateTime.MinValue;
                 _lastBackupReminderTime = DateTime.MinValue;
-            }
-
-            if (Preferences.DefaultCategory != null)
-            {
                 _authenticatorView.CategoryId = Preferences.DefaultCategory;
             }
 
@@ -259,6 +256,7 @@ namespace Stratum.Droid.Activity
             base.OnSaveInstanceState(outState);
             outState.PutLong("pauseTime", _pauseTime.Ticks);
             outState.PutLong("lastBackupReminderTime", _lastBackupReminderTime.Ticks);
+            outState.PutString("categoryId", _authenticatorView.CategoryId);
         }
 
         protected override void OnPause()
@@ -660,7 +658,7 @@ namespace Stratum.Droid.Activity
             
             var defaultCategory = Preferences.DefaultCategory;
 
-            if (_authenticatorView.CategoryId != defaultCategory)
+            if (defaultCategory != null && _authenticatorView.CategoryId != defaultCategory)
             {
                 await SwitchCategory(defaultCategory);
             }
