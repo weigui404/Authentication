@@ -657,10 +657,19 @@ namespace Stratum.Droid.Activity
                 await ParseQrCodeScanResult(uri.ToString());
                 _preventBackupReminder = true;
             }
-
-            CheckEmptyState();
-            UpdateBackpressIntercept();
             
+            var defaultCategory = Preferences.DefaultCategory;
+
+            if (_authenticatorView.CategoryId != defaultCategory)
+            {
+                await SwitchCategory(defaultCategory);
+            }
+            else
+            {
+                CheckEmptyState();
+                UpdateBackpressIntercept();
+            }
+
             RunOnUiThread(delegate { _authenticatorListAdapter.Tick(); });
 
             if (!_preventBackupReminder && Preferences.ShowBackupReminders &&
