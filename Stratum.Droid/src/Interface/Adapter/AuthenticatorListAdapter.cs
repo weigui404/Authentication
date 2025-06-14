@@ -19,6 +19,7 @@ using Stratum.Droid.Shared;
 using Google.Android.Material.ProgressIndicator;
 using Stratum.Droid.Interface.ViewHolder;
 using Stratum.Droid.Persistence.View;
+using Stratum.Droid.Shared.Util;
 using Object = Java.Lang.Object;
 
 namespace Stratum.Droid.Interface.Adapter
@@ -238,8 +239,17 @@ namespace Stratum.Droid.Interface.Adapter
             {
                 UpdateProgressIndicator(holder.ProgressIndicator, auth.Period, offset, payload.CurrentOffset);
             }
-
-            holder.RefreshButton.Visibility = payload.ShowRefresh ? ViewStates.Visible : ViewStates.Gone;
+            
+            switch (payload.ShowRefresh)
+            {
+                case true when holder.RefreshButton.Visibility != ViewStates.Visible:
+                    AnimUtil.FadeInView(holder.RefreshButton, AnimUtil.LengthShort, true);
+                    break;
+                
+                case false when holder.RefreshButton.Visibility == ViewStates.Visible:
+                    AnimUtil.FadeOutView(holder.RefreshButton, AnimUtil.LengthShort, true);
+                    break;
+            }
         }
 
         public override void OnViewAttachedToWindow(Object holderObj)
