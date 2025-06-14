@@ -741,6 +741,9 @@ namespace Stratum.Droid.Activity
 
             var importButton = FindViewById<MaterialButton>(Resource.Id.buttonImport);
             importButton.Click += delegate { OpenImportMenu(); };
+            
+            var restoreButton = FindViewById<MaterialButton>(Resource.Id.buttonRestore);
+            restoreButton.Click += delegate { StartFilePickActivity("*/*", RequestRestore); };
 
             AddButton.Click += OnAddButtonClick;
         }

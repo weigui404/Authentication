@@ -58,26 +58,41 @@
             android:id="@+id/layoutStart"
             android:orientation="vertical"
             android:gravity="center"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="10dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/buttonViewGuide"
+                style="@style/Widget.Material3.Button.TextButton"
+                android:layout_marginBottom="4dp"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/gettingStartedGuide"
+                app:icon="@drawable/baseline_help_outline_24"
+                app:iconPadding="12dp"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/buttonImport"
                 style="@style/Widget.Material3.Button.OutlinedButton"
                 android:layout_marginBottom="4dp"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
                 android:layout_gravity="center"
-                android:text="@string/gettingStartedGuide"/>
+                android:text="@string/importFromOtherApps"
+                app:icon="@drawable/baseline_input_24"
+                app:iconPadding="12dp"/>
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/buttonImport"
+                android:id="@+id/buttonRestore"
                 style="@style/Widget.Material3.Button.OutlinedButton"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
                 android:layout_gravity="center"
-                android:text="@string/importFromOtherApps"/>
+                android:text="@string/restoreBackup"
+                app:icon="@drawable/baseline_restore_24"
+                app:iconPadding="12dp"/>
         </LinearLayout>
     </LinearLayout>
 
