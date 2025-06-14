@@ -83,6 +83,8 @@ namespace Stratum.Droid.Interface.Fragment
 
             _unlockButton = view.FindViewById<MaterialButton>(Resource.Id.buttonUnlock);
             _unlockButton.Click += delegate { UnlockAttempted?.Invoke(this, _passwordText.Text); };
+            
+            _useBiometricsButton = view.FindViewById<MaterialButton>(Resource.Id.buttonUseBiometrics);
 
             if (_preferences.AllowBiometrics)
             {
@@ -95,8 +97,11 @@ namespace Stratum.Droid.Interface.Fragment
                     Toast.MakeText(Context, Resource.String.biometricsChanged, ToastLength.Long).Show();
                 }
             }
+            else
+            {
+                _useBiometricsButton.Visibility = ViewStates.Gone;
+            }
 
-            _useBiometricsButton = view.FindViewById<MaterialButton>(Resource.Id.buttonUseBiometrics);
             _useBiometricsButton.Enabled = _canUseBiometrics;
             _useBiometricsButton.Click += delegate { ShowBiometricPrompt(); };
 
