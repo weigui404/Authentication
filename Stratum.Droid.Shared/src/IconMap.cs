@@ -750,6 +750,7 @@ namespace Stratum.Droid.Shared
             { "webde", Resource.Drawable.auth_webde },
             { "webflow", Resource.Drawable.auth_webflow },
             { "webhostmanager", Resource.Drawable.auth_webhostmanager },
+            { "webuntis", Resource.Drawable.auth_webuntis },
             { "weclapp", Resource.Drawable.auth_weclapp },
             { "wellfound", Resource.Drawable.auth_wellfound },
             { "wetransfer", Resource.Drawable.auth_wetransfer },
