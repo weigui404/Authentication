@@ -9,6 +9,8 @@ import os
 import shutil
 import subprocess
 
+from joblib import Parallel, delayed
+
 CURRENT_DIR = os.path.dirname(os.path.realpath(__file__))
 MAIN_DIR = os.path.realpath(os.path.join(CURRENT_DIR, os.pardir))
 
@@ -37,9 +39,7 @@ def build_map(files: list):
         else:
             standard.append(filename)
 
-    map_path = os.path.join(
-        MAIN_DIR, "Stratum.Droid.Shared", "src", "IconMap.cs"
-    )
+    map_path = os.path.join(MAIN_DIR, "Stratum.Droid.Shared", "src", "IconMap.cs")
     file = open(map_path, "w")
 
     # fmt: off
@@ -110,6 +110,13 @@ def generate_for_dpi(dpi: str, path: str, overwrite: bool):
     )
 
 
+def process_icon(path: str, overwrite: bool):
+    print(f"Processing {path}")
+
+    for dpi in DPI_SIZES.keys():
+        generate_for_dpi(dpi, path, overwrite)
+
+
 def delete_removed(files: list[str]):
     lookup = {f"auth_{file}": 1 for file in files}
 
@@ -154,12 +161,11 @@ def main():
     print(f"Generating {len(files)} icons")
     delete_removed(files)
 
-    for filename in files:
-        print(f"Processing {filename}")
-        path = os.path.join(icons_dir, filename)
-
-        for dpi in DPI_SIZES.keys():
-            generate_for_dpi(dpi, path, args.overwrite)
+    with Parallel(n_jobs=10) as parallel:
+        parallel(
+            delayed(process_icon)(os.path.join(icons_dir, filename), args.overwrite)
+            for filename in files
+        )
 
     print("Building map")
     build_map(files)
