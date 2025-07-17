@@ -11,8 +11,8 @@ import contextlib
 import xml.etree.ElementTree as ElementTree
 from typing import Generator
 
-PACKAGE_NAME = "com.stratumauth.app"
-REPO = "https://github.com/stratumauth/app.git"
+PACKAGE_NAME = "com.weigui.authenticator"
+REPO = "https://github.com/weigui404/Authentication.git"
 
 FRAMEWORK = "net9.0-android"
 CONFIGURATION = "Release"
